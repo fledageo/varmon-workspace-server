@@ -5,11 +5,11 @@ import bcrypt from "bcrypt"
 const prisma = new PrismaClient()
 
 const main = async () => {
-    const username = "admin"
+    const email = "admin"
     const password = "varmonAdmin123"
     try {
 
-        const isExist = await prisma.user.findUnique({ where: { username } })
+        const isExist = await prisma.user.findUnique({ where: { email } })
 
         if (isExist) {
             console.log("Admin already exist")
@@ -22,7 +22,7 @@ const main = async () => {
             data: {
                 first_name: 'Վարմօն',
                 last_name: 'Ադմին',
-                username,
+                email,
                 role: 'admin',
                 password: hashedPassword,
             }
@@ -31,7 +31,8 @@ const main = async () => {
         console.log("Admin user created")
 
     } catch (error) {
-        throw new Error("something went wrong!", error)
+        console.error("Something went wrong!", error);
+        process.exit(1);
     }
 
 }

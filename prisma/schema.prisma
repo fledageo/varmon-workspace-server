@@ -13,13 +13,12 @@ model User {
   first_name   String
   last_name    String
   email        String   @unique
-  username     String   @unique
   role         Role
-  status       String
+  status       String?
   password     String
   created_at   DateTime @default(now())
   works        Work[]   @relation("AssignedEmployee")
-  progressNotes ProgressNote[] @relation("Author")
+  comments     Comment[] @relation("Author")
   files        File[]   @relation("Uploader")
 }
 
@@ -35,12 +34,12 @@ model Work {
   assignedEmployee     User?     @relation("AssignedEmployee", fields: [assigned_employee_id], references: [id])
   created_at           DateTime  @default(now())
   closed_at            DateTime?
-  progressNotes        ProgressNote[]
+  comments             Comment[]
   expenditures         Expenditure[]
   files                File[]
 }
 
-model ProgressNote {
+model Comment {
   id        Int      @id @default(autoincrement())
   work_id   Int
   author_id Int
@@ -74,7 +73,6 @@ model File {
 }
 
 enum Role {
-  ADMIN
-  TEAM_LEAD
-  EMPLOYEE
+  admin
+  user
 } 
