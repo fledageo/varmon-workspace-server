@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id           Int      @id @default(autoincrement())
+  first_name   String
+  last_name    String
+  email        String   @unique
+  username     String   @unique
+  role         Role
+  status       String
+  password     String
+  created_at   DateTime @default(now())
+  works        Work[]   @relation("AssignedEmployee")
+  progressNotes ProgressNote[] @relation("Author")
+  files        File[]   @relation("Uploader")
+}
+
+model Work {
+  id                   Int       @id @default(autoincrement())
+  work_key             String    @unique
+  title                String
+  description          String
+  price                Float
+  expected_finish_date DateTime
+  status               String
+  assigned_employee_id Int?
+  assignedEmployee     User?     @relation("AssignedEmployee", fields: [assigned_employee_id], references: [id])
+  created_at           DateTime  @default(now())
+  closed_at            DateTime?
+  progressNotes        ProgressNote[]
+  expenditures         Expenditure[]
+  files                File[]
+}
+
+model ProgressNote {
+  id        Int      @id @default(autoincrement())
+  work_id   Int
+  author_id Int
+  text      String
+  created_at DateTime @default(now())
+
+  work      Work @relation(fields: [work_id], references: [id])
+  author    User @relation("Author", fields: [author_id], references: [id])
+}
+
+model Expenditure {
+  id          Int      @id @default(autoincrement())
+  work_id     Int
+  description String
+  amount      Float
+  created_at  DateTime @default(now())
+
+  work        Work @relation(fields: [work_id], references: [id])
+}
+
+model File {
+  id          Int      @id @default(autoincrement())
+  work_id     Int
+  uploader_id Int
+  filename    String
+  file_url    String
+  uploaded_at DateTime @default(now())
+
+  work        Work @relation(fields: [work_id], references: [id])
+  uploader    User @relation("Uploader", fields: [uploader_id], references: [id])
+}
+
+enum Role {
+  ADMIN
+  TEAM_LEAD
+  EMPLOYEE
+} 
