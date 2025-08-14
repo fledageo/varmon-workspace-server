@@ -20,8 +20,8 @@ const main = async () => {
 
         await prisma.user.create({
             data: {
-                first_name: 'Վարմօն',
-                last_name: 'Ադմին',
+                first_name: 'Ադմին',
+                last_name: '',
                 email,
                 role: 'admin',
                 password: hashedPassword,
