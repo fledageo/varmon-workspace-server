@@ -24,6 +24,7 @@ const main = async () => {
                 last_name: '',
                 email,
                 role: 'admin',
+                status: 'active',
                 password: hashedPassword,
             }
         })
