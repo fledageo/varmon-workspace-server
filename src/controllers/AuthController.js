@@ -49,32 +49,38 @@ class AuthController {
     }
 
 
-
-    async getCurrentUser(req, res) {
+    async activateUser(req, res) {
         try {
-            const token = req.cookies.token
-            const { user_id } = jwt.decode(token, process.env.SECRET_KEY,)
+            const data = req.body
+            const token = req.query.token
+            const { id } = jwt.decode(token, process.env.SECRET_KEY,)
 
-            const foundUser = await prisma.user.findUnique({
-                where: { id: user_id },
-                select: {
-                    id: true,
-                    first_name: true,
-                    last_name: true,
-                    role: true
+
+            const foundUser = await prisma.user.findUnique({ where: { id } })
+
+            if (!foundUser) return res.status(404).json({ status: "error", message: "User not found" })
+
+            if (foundUser.status === "active") return res.status(400).json({ status: "error", message: "User already activated" })
+            const hashedPassword = await bcrypt.hash(data.password, 10)
+
+
+            await prisma.user.update({
+                where: { id },
+                data: {
+                    status: 'active',
+                    password: hashedPassword,
                 }
             })
 
-            if (!foundUser) {
-                return res.status(404).json({ status: "error", message: "User not found" })
-            }
 
-            return res.status(200).json({ status: "ok", payload: foundUser })
+            return res.status(200). json({ status: "ok", message: "User activated successfully"})
 
         } catch (error) {
-            return res.status(500).json({ status: "error", message: "Internal server error" })
+            console.log(error)
+            res.status(500).json({ status: "error", message: "Internal server error" })
         }
     }
+
 }
 
 

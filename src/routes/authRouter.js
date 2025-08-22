@@ -3,7 +3,7 @@ import AuthController from "../controllers/AuthController.js";
 
 const authRouter = e.Router()
 authRouter.post("/login", AuthController.login)
-authRouter.get("/user", AuthController.getCurrentUser)
+authRouter.post("/activate", AuthController.activateUser)
 
 
 
