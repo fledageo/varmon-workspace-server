@@ -7,78 +7,90 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
-  id           Int      @id @default(autoincrement())
-  first_name   String
-  last_name    String
-  email        String   @unique
-  role         Role     @default(user)
-  status       Status   @default(inactive)
-  password     String?
-  created_at   DateTime @default(now())
-  works        Work[]   @relation("AssignedEmployee")
-  comments     Comment[] @relation("Author")
-  files        File[]   @relation("Uploader")
+  id         Int        @id @default(autoincrement())
+  first_name String
+  last_name  String
+  email      String     @unique
+  role       Role       @default(user)
+  created_at DateTime   @default(now())
+  password   String?
+  status     UserStatus @default(inactive)
+  cases      Case[]     @relation("AssignedEmployee")
+  files      File[]     @relation("Uploader")
 }
 
-model Work {
-  id                   Int       @id @default(autoincrement())
-  work_key             String    @unique
-  title                String
-  description          String
-  price                Float
-  expected_finish_date DateTime
-  status               String
+model Case {
+  id                   Int           @id @default(autoincrement())
+  entryDate            DateTime
+  entryNumber          String
+  caseNumber           String
+  judge                String
+  plaintiff            String
+  defendant            String
+  investigatedAddress  String
+  propertyType         String
+  caseType             String
   assigned_employee_id Int?
-  assignedEmployee     User?     @relation("AssignedEmployee", fields: [assigned_employee_id], references: [id])
-  created_at           DateTime  @default(now())
+  price                Float
+  payment_type         PaymentTypes
+  status               CaseStatus
   closed_at            DateTime?
-  comments             Comment[]
+  isPaid               Boolean       @default(false)
+  assignedEmployee     User?         @relation("AssignedEmployee", fields: [assigned_employee_id], references: [id])
   expenditures         Expenditure[]
   files                File[]
+  notes                Note[]
 }
 
-model Comment {
-  id        Int      @id @default(autoincrement())
-  work_id   Int
-  author_id Int
-  text      String
-  created_at DateTime @default(now())
-
-  work      Work @relation(fields: [work_id], references: [id])
-  author    User @relation("Author", fields: [author_id], references: [id])
+model Note {
+  id          Int      @id @default(autoincrement())
+  case_id     Int
+  created_at  DateTime @default(now())
+  description String
+  title       String
+  case        Case     @relation(fields: [case_id], references: [id], onDelete: Cascade)
 }
 
 model Expenditure {
   id          Int      @id @default(autoincrement())
-  work_id     Int
   description String
   amount      Float
   created_at  DateTime @default(now())
-
-  work        Work @relation(fields: [work_id], references: [id])
+  case_id     Int
+  case        Case     @relation(fields: [case_id], references: [id], onDelete: Cascade)
 }
 
 model File {
   id          Int      @id @default(autoincrement())
-  work_id     Int
   uploader_id Int
   filename    String
   file_url    String
   uploaded_at DateTime @default(now())
-
-  work        Work @relation(fields: [work_id], references: [id])
-  uploader    User @relation("Uploader", fields: [uploader_id], references: [id])
+  case_id     Int
+  case        Case     @relation(fields: [case_id], references: [id])
+  uploader    User     @relation("Uploader", fields: [uploader_id], references: [id])
 }
 
 enum Role {
   admin
   user
-} 
+}
 
-
-enum Status {
+enum UserStatus {
   inactive
   active
-} 
+}
+
+enum CaseStatus {
+  waiting
+  in_progress
+  completed
+  closed
+}
+
+enum PaymentTypes {
+  cash
+  transfer
+  court
+}

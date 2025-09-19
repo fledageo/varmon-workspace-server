@@ -81,6 +81,34 @@ class AuthController {
         }
     }
 
+
+
+    async getCurrentUser(req, res) {
+        try {
+            const { user_id } = req.user
+
+            const foundUser = await prisma.user.findUnique({
+                where: { id: +user_id },
+                select: {
+                    id: true,
+                    first_name: true,
+                    last_name: true,
+                    role: true
+                }
+            })
+
+            if (!foundUser) {
+                return res.status(404).json({ status: "error", message: "User not found" })
+            }
+
+            return res.status(200).json({ status: "ok", payload: foundUser })
+
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ status: "error", message: "Internal server error" })
+        }
+    }
+
 }
 
 

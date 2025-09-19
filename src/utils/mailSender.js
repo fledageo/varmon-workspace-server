@@ -14,6 +14,7 @@ const sendMail = async function (userId, email, token, type) {
         from: `"Varmon-workspace Ադմին" <${process.env.EMAIL}>`,
         to: email,
     };
+    
     if (type === "invite") {
         activationLink = `${process.env.FRONTEND_URL}/activate/${userId}?token=${token}`
         mail.subject = "Դուք հրավիրված եք միանալու Varmon workspace-ին"
