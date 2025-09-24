@@ -86,7 +86,7 @@ class AuthController {
     async getCurrentUser(req, res) {
         try {
             const { user_id } = req.user
-
+            
             const foundUser = await prisma.user.findUnique({
                 where: { id: +user_id },
                 select: {
