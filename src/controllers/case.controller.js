@@ -66,7 +66,6 @@ class CaseController {
   async getStats(req, res) {
     try {
       const stats = await caseService.getCasesStats()
-
       return res.json({ status: "ok", payload: stats })
     } catch (err) {
       console.error(err)
@@ -78,6 +77,17 @@ class CaseController {
     try {
       const cases = await caseService.getComplatedCases()
 
+      return res.json({ status: "ok", payload: cases })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
+
+  async getUnpaidCases(req, res) {
+    try {
+      const cases = await caseService.getUnpaidCases()
       return res.json({ status: "ok", payload: cases })
     } catch (err) {
       console.error(err)

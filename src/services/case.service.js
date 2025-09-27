@@ -83,10 +83,15 @@ class CaseService {
   }
 
   async changeStatus(caseId, status) {
-    
+
+    const closed_at = status === "closed" ? new Date(Date.now()) : null
+
     return prisma.case.update({
       where: { id: +caseId },
-      data: { status }
+      data: {
+        status,
+        closed_at: closed_at
+      }
     })
   }
 
@@ -101,6 +106,7 @@ class CaseService {
     const startOfYear = new Date(now.getFullYear(), 0, 1);
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
 
     const [doneYear, doneMonth, inProgress, waiting] = await Promise.all([
       prisma.case.count({
@@ -146,6 +152,20 @@ class CaseService {
       },
     });
   }
-}
 
+
+  async getUnpaidCases() {
+    return prisma.case.findMany({
+      where: { isPaid: false },
+      select: {
+        id: true,
+        entryNumber: true,
+        caseNumber: true,
+        price: true,
+        payment_type: true,
+        isPaid: true,
+      }
+    });
+  }
+}
 export default new CaseService();
