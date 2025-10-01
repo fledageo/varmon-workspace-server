@@ -13,6 +13,7 @@ caseRouter.get("/get/unpaid", authToken,checkRole(["admin"]), CaseController.get
 caseRouter.get("/get/:id", authToken, CaseController.getCaseById);
 caseRouter.delete("/delete/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
 caseRouter.patch("/update/status/:id", authToken, CaseController.changeCaseStatus);
+caseRouter.patch("/update/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
 caseRouter.put("/update/:id", authToken, CaseController.updateCase);
 
 export default caseRouter;

@@ -53,6 +53,16 @@ class CaseController {
     }
   }
 
+  async toggleCasePaid(req, res) {
+    try {
+      const updatedCase = await caseService.toggleCasePaid(req.params.id)
+      return res.status(200).json({ status: "ok", payload: updatedCase });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ status: "error", message: "Something went wrong!" });
+    }
+  }
+
   async deleteCase(req, res) {
     try {
       await caseService.deleteCase(req.params.id);
