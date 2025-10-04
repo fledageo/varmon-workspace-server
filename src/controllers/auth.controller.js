@@ -31,7 +31,18 @@ class AuthController {
         }
     }
 
+    async inviteUser(req, res) {
+        try {
+            const { newUser } = req.body;
+            const user = await authService.inviteUser(newUser);
+            return res.status(200).json({ status: "ok", payload: user, message: "Invitation sent" });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: "error", message: error.message || "Something went wrong!" });
+        }
+    }
 
+    
     async activateUser(req, res) {
         try {
             const token = req.query.token;

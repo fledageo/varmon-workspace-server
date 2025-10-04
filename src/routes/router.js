@@ -7,7 +7,7 @@ import noteRouter from "./note.routes.js";
 
 const router = e.Router()
 router.use('/auth', authRouter)
-router.use('/admin', userRouter)
+router.use('/user', userRouter)
 router.use('/case', caseRouter)
 router.use('/expenditure', expenditureRouter)
 router.use('/note', noteRouter)
