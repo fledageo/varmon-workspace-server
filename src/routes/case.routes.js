@@ -2,6 +2,7 @@ import e from "express";
 import CaseController from "../controllers/case.controller.js";
 import authToken from "../middlewares/authToken.js";
 import checkRole from "../middlewares/checkRole.js";
+import upload from "../middlewares/upload.js";
 
 const caseRouter = e.Router();
 
@@ -11,9 +12,11 @@ caseRouter.get("/get/stats", authToken, checkRole(["admin"]), CaseController.get
 caseRouter.get("/get/complated", authToken, CaseController.getReadyToReviewCases);
 caseRouter.get("/get/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpaidCases);
 caseRouter.get("/get/:id", authToken, CaseController.getCaseById);
+caseRouter.get("/get/files/:id", authToken, CaseController.getCaseFiles);
 caseRouter.delete("/delete/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
 caseRouter.patch("/update/status/:id", authToken, CaseController.changeCaseStatus);
 caseRouter.patch("/update/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
 caseRouter.put("/update/:id", authToken, CaseController.updateCase);
+caseRouter.post("/upload/file/:id", authToken, upload.single('file'), CaseController.uploadCaseFile);
 
 export default caseRouter;

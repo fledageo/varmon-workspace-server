@@ -104,6 +104,34 @@ class CaseController {
       res.status(500).json({ status: "error", message: "Something went wrong" })
     }
   }
+
+  async uploadCaseFile(req, res) {
+    try {
+      const file = req.file;
+      const caseNumber = req.body.caseNumber;
+      const caseId = req.params.id;
+
+
+      if (!file) {
+        return res.status(400).json({ status: "error", message: "No file uploaded" });
+      }
+      const createdFile = await caseService.uploadCaseFile(file, caseId, caseNumber);
+      return res.json({ status: "ok", payload: createdFile })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
+  async getCaseFiles(req, res) {
+    try {
+      const files = await caseService.getCaseFiles(req.params.id);
+      return res.json({ status: "ok", payload: files })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
 }
 
 export default new CaseController();

@@ -1,4 +1,5 @@
 import prisma from "../../prisma/prismaClient.js";
+import B2Service from "./b2.service.js";
 
 class CaseService {
   async createCase(caseData) {
@@ -174,6 +175,28 @@ class CaseService {
         payment_type: true,
         isPaid: true,
       }
+    });
+  }
+
+
+  async uploadCaseFile(file, caseId, caseNumber) {
+    const fileUrl = await B2Service.uploadTempFile(file, caseId, caseNumber);
+    const createdFile = await prisma.file.create({
+      data: {
+        filename: file.originalname,
+        file_url: fileUrl,
+        caseNumber: caseNumber,
+        case: {
+          connect: { id: +caseId }
+        }
+      }    
+    });
+    return createdFile;
+  }
+
+  async getCaseFiles(caseId) {
+    return prisma.file.findMany({
+      where: { case_id: +caseId },
     });
   }
 }

@@ -1,49 +1,32 @@
-import prisma from "../../prisma/prismaClient.js    "
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
+import authService from "../services/auth.service.js";
 
 class AuthController {
     async login(req, res) {
         try {
-            const email = req.body.email.trim().toLowerCase()
-            const password = req.body.password
-            const foundUser = await prisma.user.findUnique({ where: { email } })
+            const { email, password } = req.body;
+            const result = await authService.login(email, password);
 
-            if (!foundUser) {
-                return res.status(401).json({ status: "error", message: "Invalid credentials", code: 'INVALID_CREDENTIALS' })
-            }
-            const isPasswordValid = await bcrypt.compare(password, foundUser.password)
+            res.cookie('token', result.accessToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+                maxAge: 4 * 60 * 60 * 1000,
+            });
 
-            if (!isPasswordValid) {
-                return res.status(401).json({ status: "error", message: "Invalid credentials", code: 'INVALID_CREDENTIALS' })
-            } else {
-
-                const accessToken = jwt.sign(
-                    { user_id: foundUser.id, role: foundUser.role },
-                    process.env.SECRET_KEY,
-                    { expiresIn: '4h' }
-                )
-
-
-                res.cookie('token', accessToken, {
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: 'strict',
-                    maxAge: 4 * 60 * 60 * 1000,
-                });
-
-                const { password: _, ...user } = foundUser
-
-                res.status(200).json({
-                    status: "ok",
-                    message: "Successful login",
-                    payload: { user }
-                })
-            }
-
-
+            return res.status(200).json({
+                status: "ok",
+                message: "Successful login",
+                payload: { user: result.user }
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            if (error.message === "INVALID_CREDENTIALS") {
+                return res.status(401).json({
+                    status: "error",
+                    message: "Invalid credentials",
+                    code: 'INVALID_CREDENTIALS'
+                });
+            }
             return res.status(500).json({ status: "error", message: 'Server internal error' });
         }
     }
@@ -51,33 +34,20 @@ class AuthController {
 
     async activateUser(req, res) {
         try {
-            const data = req.body
-            const token = req.query.token
-            const { id } = jwt.decode(token, process.env.SECRET_KEY,)
+            const token = req.query.token;
+            const data = req.body;
 
-
-            const foundUser = await prisma.user.findUnique({ where: { id } })
-
-            if (!foundUser) return res.status(404).json({ status: "error", message: "User not found" })
-
-            if (foundUser.status === "active") return res.status(400).json({ status: "error", message: "User already activated" })
-            const hashedPassword = await bcrypt.hash(data.password, 10)
-
-
-            await prisma.user.update({
-                where: { id },
-                data: {
-                    status: 'active',
-                    password: hashedPassword,
-                }
-            })
-
-
-            return res.status(200). json({ status: "ok", message: "User activated successfully"})
-
+            await authService.activateUser(token, data);
+            return res.status(200).json({ status: "ok", message: "User activated successfully" });
         } catch (error) {
-            console.log(error)
-            res.status(500).json({ status: "error", message: "Internal server error" })
+            console.log(error);
+            if (error.message === "USER_NOT_FOUND") {
+                return res.status(404).json({ status: "error", message: "User not found" });
+            }
+            if (error.message === "USER_ALREADY_ACTIVATED") {
+                return res.status(400).json({ status: "error", message: "User already activated" });
+            }
+            return res.status(500).json({ status: "error", message: "Internal server error" });
         }
     }
 
@@ -85,30 +55,33 @@ class AuthController {
 
     async getCurrentUser(req, res) {
         try {
-            const { user_id } = req.user
-            
-            const foundUser = await prisma.user.findUnique({
-                where: { id: +user_id },
-                select: {
-                    id: true,
-                    first_name: true,
-                    last_name: true,
-                    role: true
-                }
-            })
-
-            if (!foundUser) {
-                return res.status(404).json({ status: "error", message: "User not found" })
-            }
-
-            return res.status(200).json({ status: "ok", payload: foundUser })
-
+            const { user_id } = req.user;
+            const foundUser = await authService.getCurrentUser(user_id);
+            return res.status(200).json({ status: "ok", payload: foundUser });
         } catch (error) {
-            console.log(error)
-            return res.status(500).json({ status: "error", message: "Internal server error" })
+            console.log(error);
+            if (error.message === "USER_NOT_FOUND") {
+                return res.status(404).json({ status: "error", message: "User not found" });
+            }
+            return res.status(500).json({ status: "error", message: "Internal server error" });
         }
     }
 
+
+    async logout(req, res) {
+        try {
+            res.clearCookie('token', {
+                httpOnly: true,
+                secure: true,
+                sameSite: 'strict',
+            });
+
+            return res.status(200).json({ status: "ok", message: "Logged out successfully" });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ status: "error", message: "Internal server error" });
+        }
+    }
 }
 
 

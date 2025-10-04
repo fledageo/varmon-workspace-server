@@ -6,7 +6,7 @@ const authRouter = e.Router()
 authRouter.post("/login", AuthController.login)
 authRouter.post("/activate", AuthController.activateUser)
 authRouter.get("/current", authToken, AuthController.getCurrentUser)
-
+authRouter.post("/logout", authToken, AuthController.logout)
 
 
 export default authRouter
