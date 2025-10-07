@@ -1,3 +1,4 @@
+import { UserStatus } from "@prisma/client";
 import userService from "../services/user.service.js";
 
 class UserController {
@@ -19,6 +20,17 @@ class UserController {
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
+    }
+  }
+
+  async deleteUser(req, res) {
+    try {
+      const { id } = req.params;
+      const deleted = await userService.delete(id);
+      return await res.status(200).json({status: 'ok', message: "User deleted", payload: deleted});
+    } catch (error) {
+      console.error(error);
+      return await res.status(500).json({status: "error", message: error.message})
     }
   }
 }
