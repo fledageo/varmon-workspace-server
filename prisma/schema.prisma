@@ -67,7 +67,7 @@ model File {
   file_url    String
   uploaded_at DateTime @default(now())
   caseNumber  String           
-  case        Case @relation("CaseFiles", fields: [case_id], references: [id])
+  case        Case @relation("CaseFiles", fields: [case_id], references: [id], onDelete: Cascade)
 }
 
 enum Role {

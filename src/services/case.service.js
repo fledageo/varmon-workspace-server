@@ -106,7 +106,12 @@ class CaseService {
   }
 
   async deleteCase(id) {
-    return prisma.case.delete({ where: { id: +id } });
+    const files = await prisma.file.findMany({ where: { case_id: +id } })
+    for (const file of files) {
+      await B2Service.deleteFile(file.file_url)
+    }
+    const deletedCase = await prisma.case.delete({ where: { id: +id } });
+    return deletedCase;
   }
 
 
@@ -178,6 +183,16 @@ class CaseService {
     });
   }
 
+  async getCaseFiles(caseId) {
+    return prisma.file.findMany({
+      where: { case_id: +caseId },
+    });
+  }
+
+  async getFileById(fileId) {
+    return prisma.file.findUnique({ where: { id: +fileId } });
+  }
+
 
   async uploadCaseFile(file, caseId, caseNumber) {
     const fileUrl = await B2Service.uploadTempFile(file, caseId, caseNumber);
@@ -194,10 +209,14 @@ class CaseService {
     return createdFile;
   }
 
-  async getCaseFiles(caseId) {
-    return prisma.file.findMany({
-      where: { case_id: +caseId },
-    });
+  async deleteCaseFile(fileId) {
+    const file = await prisma.file.findUnique({ where: { id: +fileId } });
+    await B2Service.deleteFile(file.file_url);
+    await prisma.file.delete({ where: { id: +fileId } });
+  }
+
+  async downloadCaseFile(fileUrl) {
+    return await B2Service.downloadFile(fileUrl);
   }
 }
 export default new CaseService();

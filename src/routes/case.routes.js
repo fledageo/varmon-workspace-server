@@ -18,5 +18,7 @@ caseRouter.patch("/update/status/:id", authToken, CaseController.changeCaseStatu
 caseRouter.patch("/update/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
 caseRouter.put("/update/:id", authToken, CaseController.updateCase);
 caseRouter.post("/upload/file/:id", authToken, upload.single('file'), CaseController.uploadCaseFile);
+caseRouter.delete("/delete/file/:id", authToken, CaseController.deleteCaseFile);
+caseRouter.get("/download/file/:id", authToken, CaseController.downloadCaseFile);
 
 export default caseRouter;
