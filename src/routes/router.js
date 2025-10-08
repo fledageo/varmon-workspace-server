@@ -2,6 +2,7 @@ import e from "express";
 import authRouter from "./auth.routes.js";
 import userRouter from "./user.routes.js";
 import caseRouter from "./case.routes.js";
+import fileRouter from "./file.route.js";
 import expenditureRouter from "./expenditure.routes.js";
 import noteRouter from "./note.routes.js";
 
@@ -9,6 +10,7 @@ const router = e.Router()
 router.use('/auth', authRouter)
 router.use('/user', userRouter)
 router.use('/case', caseRouter)
+router.use('/file', fileRouter)
 router.use('/expenditure', expenditureRouter)
 router.use('/note', noteRouter)
 

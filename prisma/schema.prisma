@@ -85,6 +85,7 @@ enum CaseStatus {
   in_progress
   completed
   closed
+  canceled
 }
 
 enum PaymentTypes {
