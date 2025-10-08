@@ -42,7 +42,7 @@ class CaseController {
   }
 
   async changeCaseStatus(req, res) {
-    const {status} = req.body
+    const { status } = req.body
 
     try {
       const updatedCase = await caseService.changeStatus(req.params.id, status)
@@ -127,6 +127,38 @@ class CaseController {
     try {
       const files = await caseService.getCaseFiles(req.params.id);
       return res.json({ status: "ok", payload: files })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
+  async deleteCaseFile(req, res) {
+    try {
+      await caseService.deleteCaseFile(req.params.id);
+      return res.json({ status: "ok", message: "File deleted" })
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
+  async downloadCaseFile(req, res) {
+    try {
+      const file = await caseService.getFileById(req.params.id);
+      if(!file) {
+        return res.status(404).json({ status: "error", message: "File not found" });
+      }
+      const fileData = await caseService.downloadCaseFile(file.file_url);
+      
+      const contentType = fileData.ContentType || "application/octet-stream";
+      res.setHeader("Content-Type", contentType);
+  
+      const safeFileName = encodeURIComponent(file.file_name);
+      res.setHeader("Content-Disposition", `attachment; filename="${safeFileName}"`);
+
+      fileData.Body.pipe(res)
+
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: "error", message: "Something went wrong" })

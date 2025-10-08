@@ -106,7 +106,12 @@ class CaseService {
   }
 
   async deleteCase(id) {
-    return prisma.case.delete({ where: { id: +id } });
+    const files = await prisma.file.findMany({ where: { case_id: +id } })
+    for (const file of files) {
+      await B2Service.deleteFile(file.file_url)
+    }
+    const deletedCase = await prisma.case.delete({ where: { id: +id } });
+    return deletedCase;
   }
 
 
@@ -175,28 +180,6 @@ class CaseService {
         payment_type: true,
         isPaid: true,
       }
-    });
-  }
-
-
-  async uploadCaseFile(file, caseId, caseNumber) {
-    const fileUrl = await B2Service.uploadTempFile(file, caseId, caseNumber);
-    const createdFile = await prisma.file.create({
-      data: {
-        filename: file.originalname,
-        file_url: fileUrl,
-        caseNumber: caseNumber,
-        case: {
-          connect: { id: +caseId }
-        }
-      }    
-    });
-    return createdFile;
-  }
-
-  async getCaseFiles(caseId) {
-    return prisma.file.findMany({
-      where: { case_id: +caseId },
     });
   }
 }
