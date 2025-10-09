@@ -131,7 +131,7 @@ class CaseService {
 
   async getUnpaidCases() {
     return prisma.case.findMany({
-      where: { isPaid: false },
+      where: { isPaid: false, payment_type: {not: 'for_free'} },
       select: {
         id: true,
         entryNumber: true,
