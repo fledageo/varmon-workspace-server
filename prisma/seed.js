@@ -27,7 +27,7 @@ const main = async () => {
                 status: 'active',
                 password: hashedPassword,
             }
-        })
+        })  
 
         console.log("Admin user created")
 

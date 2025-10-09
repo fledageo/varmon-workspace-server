@@ -14,9 +14,17 @@ class StatsController {
     async getYearlyProfit(req, res) {
         try {
             const YearlyProfitData = await StatsService.getYearlyProfitData()
+            return res.json({ status: "ok", payload: YearlyProfitData })
+        } catch (err) {
+            console.error(err)
+            res.status(500).json({ status: "error", message: "Something went wrong" })
+        }
+    }
 
-            console.log(YearlyProfitData)
-            // return res.json({ status: "ok", payload: stats })
+    async getYearlyCasesCount(req, res) {
+        try {
+            const YearlyCasesCount = await StatsService.getYearlyCasesCount()
+            return res.json({ status: "ok", payload: YearlyCasesCount })
         } catch (err) {
             console.error(err)
             res.status(500).json({ status: "error", message: "Something went wrong" })

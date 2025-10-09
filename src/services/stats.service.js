@@ -47,7 +47,7 @@ class StatsService {
                 status: "closed",
                 closed_at: {
                     gte: startOfYear,
-                    lte: now
+                    lte: now,
                 }
             },
             select: {
@@ -57,15 +57,43 @@ class StatsService {
         })
 
         const months = Array.from({ length: 12 }, (_, i) => ({
-            month: new Date(0, i).toLocaleString("en", { month: "short" }),
+            month: i,
             profit: 0
         }));
 
-        for (let c in cases) {
-            const monthIndex = c.closed_at.getMonth(); // 0 = Jan, 1 = Feb, ...
+        for (let c of cases) {
+            const monthIndex = c.closed_at.getMonth(); 
             months[monthIndex].profit += c.price;
         }
 
+        return months.slice(0, now.getMonth() + 1);
+    }
+
+
+    async getYearlyCasesCount() {
+        const now = new Date();
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const cases = await prisma.case.findMany({
+            where: {
+                status: "closed",
+                closed_at: {
+                    gte: startOfYear,
+                    lte: now,
+                }
+            },
+            select: {
+                closed_at: true
+            }
+        })
+        const months = Array.from({ length: 12 }, (_, i) => ({
+            month: i,
+            cases: 0
+        }));
+
+        for (let c of cases) {
+            const monthIndex = c.closed_at.getMonth(); 
+            months[monthIndex].cases += 1;
+        }
         return months.slice(0, now.getMonth() + 1);
     }
 }

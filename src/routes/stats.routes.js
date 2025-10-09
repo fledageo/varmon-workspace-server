@@ -7,6 +7,7 @@ const statsRouter = e.Router();
 
 statsRouter.get("/", authToken, checkRole(["admin"]), StatsController.getStats);
 statsRouter.get("/year/profit", authToken, checkRole(["admin"]), StatsController.getYearlyProfit);
+statsRouter.get("/year/cases", authToken, checkRole(["admin"]), StatsController.getYearlyCasesCount);
 
 
 export default statsRouter;
