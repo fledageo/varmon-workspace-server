@@ -11,11 +11,13 @@ caseRouter.post("/add", authToken, checkRole(["admin"]), CaseController.addCase)
 caseRouter.get("/get/all", authToken, checkRole(["admin"]), CaseController.getCases);
 caseRouter.get("/get/complated", authToken, CaseController.getReadyToReviewCases);
 caseRouter.get("/get/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpaidCases);
+caseRouter.get("/get/waiting", authToken,checkRole(["admin"]), CaseController.getWaitingCases);
 caseRouter.get("/get/:id", authToken, CaseController.getCaseById);
 
 caseRouter.delete("/delete/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
 caseRouter.patch("/update/status/:id", authToken, CaseController.changeCaseStatus);
 caseRouter.patch("/update/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
+caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.assignedCase);
 caseRouter.put("/update/:id", authToken, CaseController.updateCase);
 
 export default caseRouter;
