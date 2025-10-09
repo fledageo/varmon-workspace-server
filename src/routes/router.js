@@ -5,6 +5,7 @@ import caseRouter from "./case.routes.js";
 import fileRouter from "./file.route.js";
 import expenditureRouter from "./expenditure.routes.js";
 import noteRouter from "./note.routes.js";
+import statsRouter from "./stats.routes.js";
 
 const router = e.Router()
 router.use('/auth', authRouter)
@@ -13,5 +14,7 @@ router.use('/case', caseRouter)
 router.use('/file', fileRouter)
 router.use('/expenditure', expenditureRouter)
 router.use('/note', noteRouter)
+router.use('/stats', statsRouter)
+
 
 export default router 

@@ -73,15 +73,15 @@ class CaseController {
     }
   }
 
-  async getStats(req, res) {
-    try {
-      const stats = await caseService.getCasesStats()
-      return res.json({ status: "ok", payload: stats })
-    } catch (err) {
-      console.error(err)
-      res.status(500).json({ status: "error", message: "Something went wrong" })
-    }
-  }
+  // async getStats(req, res) {
+  //   try {
+  //     const stats = await caseService.getCasesStats()
+  //     return res.json({ status: "ok", payload: stats })
+  //   } catch (err) {
+  //     console.error(err)
+  //     res.status(500).json({ status: "error", message: "Something went wrong" })
+  //   }
+  // }
 
   async getReadyToReviewCases(req, res) {
     try {

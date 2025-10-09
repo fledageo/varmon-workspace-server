@@ -9,7 +9,6 @@ const caseRouter = e.Router();
 caseRouter.post("/add", authToken, checkRole(["admin"]), CaseController.addCase);
 
 caseRouter.get("/get/all", authToken, checkRole(["admin"]), CaseController.getCases);
-caseRouter.get("/get/stats", authToken, checkRole(["admin"]), CaseController.getStats);
 caseRouter.get("/get/complated", authToken, CaseController.getReadyToReviewCases);
 caseRouter.get("/get/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpaidCases);
 caseRouter.get("/get/:id", authToken, CaseController.getCaseById);

@@ -21,6 +21,10 @@ class UserController {
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
     }
   }
+
+  async deleteUser(req, res) {
+    
+  }
 }
 
 export default new UserController();

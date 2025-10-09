@@ -92,4 +92,5 @@ enum PaymentTypes {
   cash
   transfer
   court
+  for_free
 }

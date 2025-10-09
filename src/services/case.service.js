@@ -114,46 +114,6 @@ class CaseService {
     return deletedCase;
   }
 
-
-  async getCasesStats() {
-    const now = new Date();
-
-    const startOfYear = new Date(now.getFullYear(), 0, 1);
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
-
-
-    const [doneYear, doneMonth, inProgress, waiting] = await Promise.all([
-      prisma.case.count({
-        where: {
-          status: "closed",
-          closed_at: { gte: startOfYear },
-        },
-      }),
-      prisma.case.count({
-        where: {
-          status: "closed",
-          closed_at: { gte: startOfMonth, lte: endOfMonth },
-        },
-      }),
-      prisma.case.count({
-        where: { status: "in_progress" },
-      }),
-      prisma.case.count({
-        where: { status: "waiting" },
-      }),
-    ]);
-
-    return {
-      doneYear,
-      doneMonth,
-      inProgress,
-      waiting,
-    };
-  }
-
-
-
   async getComplatedCases() {
     return prisma.case.findMany({
       where: { status: "completed" },

@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 const main = async () => {
     const email = "admin"
-    const password = "varmonAdmin123"
+    const password = "admin123"
     try {
 
         const isExist = await prisma.user.findUnique({ where: { email } })
