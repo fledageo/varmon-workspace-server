@@ -83,6 +83,18 @@ class CaseController {
     }
   }
 
+  async assignedCase(req, res) {
+    try {
+      const { id } = req.params;
+      const { assignUserId } = req.body;
+      const updateCase = await caseService.assignedCase(id, assignUserId);
+      return res.status(200).json({ status: "ok", payload: updateCase});
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({ status: "error", message: "Something went wrong!" });
+    }
+  }
+
   async deleteCase(req, res) {
     try {
       await caseService.deleteCase(req.params.id);
@@ -112,6 +124,16 @@ class CaseController {
       return res.json({ status: "ok", payload: cases })
     } catch (err) {
       console.error(err)
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
+  async getWaitingCases(req, res) {
+    try {
+      const cases = await caseService.getWaitingCases();
+      return res.json({ status: "ok", payload: cases })
+    } catch (error) {
+      console.error(error);
       res.status(500).json({ status: "error", message: "Something went wrong" })
     }
   }

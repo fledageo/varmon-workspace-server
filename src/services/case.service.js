@@ -135,6 +135,13 @@ class CaseService {
     })
   }
 
+  async assignedCase(id, assigned_employee_id) {
+    return prisma.case.update({
+      where: {id: +id},
+      data: {assigned_employee_id: +assigned_employee_id}
+    })
+  }
+
   async deleteCase(id) {
     const files = await prisma.file.findMany({ where: { case_id: +id } })
     for (const file of files) {
@@ -171,6 +178,24 @@ class CaseService {
         isPaid: true,
       }
     });
+  }
+
+  async getWaitingCases() {
+    return prisma.case.findMany({
+      where: { 
+        status: "waiting", 
+        assigned_employee_id: null
+      },
+      select: {
+        id: true,
+        entryNumber: true,
+        caseNumber: true,
+        price: true,
+        payment_type: true,
+        isPaid: true,
+        assignedEmployee: true,
+      }
+    })
   }
 }
 export default new CaseService();
