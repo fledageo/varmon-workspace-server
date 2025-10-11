@@ -10,7 +10,7 @@ import statsRouter from "./stats.routes.js";
 const router = e.Router()
 router.use('/auth', authRouter)
 router.use('/user', userRouter)
-router.use('/case', caseRouter)
+router.use('/cases', caseRouter)
 router.use('/file', fileRouter)
 router.use('/expenditure', expenditureRouter)
 router.use('/note', noteRouter)

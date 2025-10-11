@@ -28,8 +28,11 @@ class CaseService {
     });
   }
 
-  async getAllCases() {
+  async getCurrentCases() {
     return prisma.case.findMany({
+      where: {
+        status: { notIn: ["closed", "canceled"] },
+      },
       select: {
         id: true,
         entryDate: true,
@@ -41,6 +44,33 @@ class CaseService {
       }
     });
   }
+
+  async getArchiveCases(page, limit) {
+    const skip = (page - 1) * limit;
+
+    const cases = await prisma.case.findMany({
+      where: { status: { in: ["closed", "canceled"] } },
+      select: { 
+        id: true,
+        entryDate: true,
+        entryNumber: true,
+        caseNumber: true,
+        investigatedAddress: true,
+        assignedEmployee: true,
+        status: true,
+      },
+      skip,
+      take: limit,
+      orderBy: { entryDate: "desc" },
+    });
+
+    const total = await prisma.case.count({
+      where: { status: { in: ["closed", "canceled"] } },
+    });
+  
+    return { cases, total };
+  }
+
 
   async getCaseById(id) {
     return prisma.case.findUnique({
@@ -98,7 +128,7 @@ class CaseService {
 
   async toggleCasePaid(id) {
     const isPaid = await prisma.case.findUnique({ where: { id: +id } }).isPaid
-    
+
     return prisma.case.update({
       where: { id: +id },
       data: { isPaid: { set: !isPaid } }
@@ -131,7 +161,7 @@ class CaseService {
 
   async getUnpaidCases() {
     return prisma.case.findMany({
-      where: { isPaid: false, payment_type: {not: 'for_free'} },
+      where: { isPaid: false, payment_type: { not: 'for_free' } },
       select: {
         id: true,
         entryNumber: true,

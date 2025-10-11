@@ -6,16 +6,18 @@ import upload from "../middlewares/upload.js";
 
 const caseRouter = e.Router();
 
-caseRouter.post("/add", authToken, checkRole(["admin"]), CaseController.addCase);
+caseRouter.post("/", authToken, checkRole(["admin"]), CaseController.addCase);
 
-caseRouter.get("/get/all", authToken, checkRole(["admin"]), CaseController.getCases);
-caseRouter.get("/get/complated", authToken, CaseController.getReadyToReviewCases);
-caseRouter.get("/get/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpaidCases);
-caseRouter.get("/get/:id", authToken, CaseController.getCaseById);
+caseRouter.get("/current", authToken, checkRole(["admin"]), CaseController.getCurrentCases);
+caseRouter.get("/complated", authToken, CaseController.getReadyToReviewCases);
+caseRouter.get("/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpaidCases);
+caseRouter.get("/case/:id", authToken, CaseController.getCaseById);
+caseRouter.get("/archive", authToken, CaseController.getArchiveCases);
 
-caseRouter.delete("/delete/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
-caseRouter.patch("/update/status/:id", authToken, CaseController.changeCaseStatus);
-caseRouter.patch("/update/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
-caseRouter.put("/update/:id", authToken, CaseController.updateCase);
+
+caseRouter.delete("/case/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
+caseRouter.patch("/status/:id", authToken, CaseController.changeCaseStatus);
+caseRouter.patch("/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
+caseRouter.put("/:id", authToken, CaseController.updateCase);
 
 export default caseRouter;

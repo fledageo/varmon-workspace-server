@@ -11,13 +11,33 @@ class CaseController {
     }
   }
 
-  async getCases(req, res) {
+  async getCurrentCases(req, res) {
     try {
-      const cases = await caseService.getAllCases();
+      const cases = await caseService.getCurrentCases();
       return res.status(200).json({ status: "ok", payload: cases });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
+    }
+  }
+
+  async getArchiveCases(req, res) {
+    try {
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+
+      const { cases, total } = await caseService.getArchiveCases(page, limit);
+
+      return res.status(200).json({
+        status: "ok",
+        payload: { cases, total },
+      });
+      
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .json({ status: "error", message: "Something went wrong!" });
     }
   }
 
@@ -137,14 +157,14 @@ class CaseController {
   async downloadCaseFile(req, res) {
     try {
       const file = await caseService.getFileById(req.params.id);
-      if(!file) {
+      if (!file) {
         return res.status(404).json({ status: "error", message: "File not found" });
       }
       const fileData = await caseService.downloadCaseFile(file.file_url);
-      
+
       const contentType = fileData.ContentType || "application/octet-stream";
       res.setHeader("Content-Type", contentType);
-  
+
       const safeFileName = encodeURIComponent(file.file_name);
       res.setHeader("Content-Disposition", `attachment; filename="${safeFileName}"`);
 
