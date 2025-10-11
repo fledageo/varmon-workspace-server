@@ -150,14 +150,11 @@ class CaseService {
     });
   }
 
-  async getWaitingCases(id) {
+  async getWaitingCases() {
     return prisma.case.findMany({
       where: { 
         status: "waiting", 
-        OR: [
-          {assigned_employee_id: null},
-          {assigned_employee_id: { not: +id }}
-        ]
+        assigned_employee_id: null
       },
       select: {
         id: true,

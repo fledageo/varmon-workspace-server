@@ -110,8 +110,7 @@ class CaseController {
 
   async getWaitingCases(req, res) {
     try {
-      const { userId } = req.query;
-      const cases = await caseService.getWaitingCases(userId);
+      const cases = await caseService.getWaitingCases();
       return res.json({ status: "ok", payload: cases })
     } catch (error) {
       console.error(error);
