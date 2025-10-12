@@ -128,6 +128,17 @@ class CaseController {
     }
   }
 
+  async getUserCases(req, res) {
+    try {
+      const { userId } = req.params;
+      const cases = await caseService.getUserCases(userId);
+      return res.status(200).json({ status: "ok", payload: cases })
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ status: "error", message: "Something went wrong "});
+    }
+  }
+
   async getWaitingCases(req, res) {
     try {
       const cases = await caseService.getWaitingCases();
