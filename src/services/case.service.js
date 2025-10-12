@@ -45,31 +45,31 @@ class CaseService {
     });
   }
 
-  async getArchiveCases(page, limit) {
-    const skip = (page - 1) * limit;
+  // async getArchiveCases(page, limit) {
+  //   const skip = (page - 1) * limit;
 
-    const cases = await prisma.case.findMany({
-      where: { status: { in: ["closed", "canceled"] } },
-      select: { 
-        id: true,
-        entryDate: true,
-        entryNumber: true,
-        caseNumber: true,
-        investigatedAddress: true,
-        assignedEmployee: true,
-        status: true,
-      },
-      skip,
-      take: limit,
-      orderBy: { entryDate: "desc" },
-    });
+  //   const cases = await prisma.case.findMany({
+  //     where: { status: { in: ["closed", "canceled"] } },
+  //     select: {
+  //       id: true,
+  //       entryDate: true,
+  //       entryNumber: true,
+  //       caseNumber: true,
+  //       investigatedAddress: true,
+  //       assignedEmployee: true,
+  //       status: true,
+  //     },
+  //     skip,
+  //     take: limit,
+  //     orderBy: { entryDate: "desc" },
+  //   });
 
-    const total = await prisma.case.count({
-      where: { status: { in: ["closed", "canceled"] } },
-    });
-  
-    return { cases, total };
-  }
+  //   const total = await prisma.case.count({
+  //     where: { status: { in: ["closed", "canceled"] } },
+  //   });
+
+  //   return { cases, total };
+  // }
 
 
   async getCaseById(id) {
@@ -137,8 +137,8 @@ class CaseService {
 
   async assignedCase(id, assigned_employee_id) {
     return prisma.case.update({
-      where: {id: +id},
-      data: {assigned_employee_id: +assigned_employee_id}
+      where: { id: +id },
+      data: { assigned_employee_id: +assigned_employee_id }
     })
   }
 
@@ -182,8 +182,8 @@ class CaseService {
 
   async getWaitingCases() {
     return prisma.case.findMany({
-      where: { 
-        status: "waiting", 
+      where: {
+        status: "waiting",
         assigned_employee_id: null
       },
       select: {
@@ -197,5 +197,52 @@ class CaseService {
       }
     })
   }
+
+  async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
+    const skip = (page - 1) * limit;
+
+    const searchableFields = [
+      "judge",
+      "entryNumber",
+      "caseNumber",
+      "plaintiff",
+      "defendant",
+    ];
+
+    const orFilters = searchableFields.map(field => ({
+      [field]: { contains: search, mode: "insensitive" }
+    }));
+
+    const where = {
+      status: { in: ["closed", "canceled"] },
+      ...(search ? { OR: orFilters } : {})
+    };
+
+    if (startDate || endDate) {
+      const entryDate = {};
+      if (startDate) {
+        entryDate.gte = new Date(startDate);
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        entryDate.lte = end;
+      }
+      where.entryDate = entryDate;
+    }
+
+    const [cases, total] = await Promise.all([
+      prisma.case.findMany({
+        where,
+        skip,
+        take: +limit,
+        orderBy: { entryDate: 'desc' }
+      }),
+      prisma.case.count({ where })
+    ])
+
+    return { cases, total };
+  }
+
 }
 export default new CaseService();
