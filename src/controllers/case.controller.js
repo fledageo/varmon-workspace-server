@@ -21,25 +21,6 @@ class CaseController {
     }
   }
 
-  async getArchiveCases(req, res) {
-    try {
-      const page = Number(req.query.page) || 1;
-      const limit = Number(req.query.limit) || 10;
-
-      const { cases, total } = await caseService.getArchiveCases(page, limit);
-
-      return res.status(200).json({
-        status: "ok",
-        payload: { cases, total },
-      });
-      
-    } catch (error) {
-      console.error(error);
-      return res
-        .status(500)
-        .json({ status: "error", message: "Something went wrong!" });
-    }
-  }
 
   async getCaseById(req, res) {
     try {
@@ -208,6 +189,19 @@ class CaseController {
       res.status(500).json({ status: "error", message: "Something went wrong" })
     }
   }
+
+
+  async getArchiveCases(req, res) {
+    try {
+      const { page, limit, search, startDate, endDate } = req.query;
+      const data = await caseService.getArchiveCases(page, limit, search, startDate, endDate);
+      return res.json({ status: "ok", payload: data })
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
 }
 
 export default new CaseController();
