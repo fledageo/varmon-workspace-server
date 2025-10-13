@@ -54,9 +54,9 @@ class CaseController {
     }
   }
 
-  async toggleCasePaid(req, res) {
+  async setCasePaid(req, res) {
     try {
-      const updatedCase = await caseService.toggleCasePaid(req.params.id)
+      const updatedCase = await caseService.setCasePaid(req.params.id)
       return res.status(200).json({ status: "ok", payload: updatedCase });
     } catch (error) {
       console.error(error);

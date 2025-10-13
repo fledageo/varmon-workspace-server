@@ -126,12 +126,10 @@ class CaseService {
     })
   }
 
-  async toggleCasePaid(id) {
-    const isPaid = await prisma.case.findUnique({ where: { id: +id } }).isPaid
-
+  async setCasePaid(id) {
     return prisma.case.update({
       where: { id: +id },
-      data: { isPaid: { set: !isPaid } }
+      data: { isPaid: { set: true } }
     })
   }
 
