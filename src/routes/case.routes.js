@@ -11,6 +11,7 @@ caseRouter.get("/current", authToken, checkRole(["admin"]), CaseController.getCu
 caseRouter.get("/complated", authToken, CaseController.getReadyToReviewCases);
 caseRouter.get("/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpaidCases);
 caseRouter.get("/get/waiting", authToken,checkRole(["admin"]), CaseController.getWaitingCases);
+caseRouter.get("/user/:userId", authToken, checkRole(["admin"]), CaseController.getUserCases);
 caseRouter.get("/case/:id", authToken, CaseController.getCaseById);
 caseRouter.get("/archive", authToken, CaseController.getArchiveCases);
 
@@ -19,6 +20,6 @@ caseRouter.delete("/case/:id", authToken, checkRole(["admin"]), CaseController.d
 caseRouter.patch("/status/:id", authToken, CaseController.changeCaseStatus);
 caseRouter.patch("/paid/:id", authToken, checkRole(["admin"]), CaseController.setCasePaid);
 caseRouter.put("/:id", authToken, CaseController.updateCase);
-caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.assignedCase);
+caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.assignCase);
 
 export default caseRouter;

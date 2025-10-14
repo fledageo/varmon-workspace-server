@@ -47,7 +47,8 @@ class CaseController {
 
     try {
       const updatedCase = await caseService.changeStatus(req.params.id, status)
-      return res.status(200).json({ status: "ok", payload: updatedCase });
+      return res.status(200).json(updatedCase)
+    
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
@@ -64,11 +65,11 @@ class CaseController {
     }
   }
 
-  async assignedCase(req, res) {
+  async assignCase(req, res) {
     try {
       const { id } = req.params;
       const { assignUserId } = req.body;
-      const updateCase = await caseService.assignedCase(id, assignUserId);
+      const updateCase = await caseService.assignCase(id, assignUserId);
       return res.status(200).json({ status: "ok", payload: updateCase});
     } catch (error) {
       console.error(error)
@@ -106,6 +107,17 @@ class CaseController {
     } catch (err) {
       console.error(err)
       res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
+  async getUserCases(req, res) {
+    try {
+      const { userId } = req.params;
+      const cases = await caseService.getUserCases(userId);
+      return res.status(200).json({ status: "ok", payload: cases })
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ status: "error", message: "Something went wrong "});
     }
   }
 
