@@ -32,6 +32,16 @@ class UserController {
       return await res.status(500).json({status: "error", message: error.message})
     }
   }
+
+  async updateUser(req, res) {
+    try {
+      const updatedUser = await userService.updateUser(req.params.id, req.body);
+      return res.status(200).json({ status: "ok", payload: updatedUser });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ status: "error", message: "Something went wrong!" });
+    }
+  }
 }
 
 export default new UserController();

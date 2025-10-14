@@ -8,6 +8,7 @@ const userRouter = e.Router()
 userRouter.get("/all", authToken, UserController.getAllUsers)
 userRouter.get("/:id", authToken, UserController.getUserById)
 userRouter.delete("/:id", authToken, UserController.deleteUser)
+userRouter.put("/:id", authToken, UserController.updateUser)
 
 
 
