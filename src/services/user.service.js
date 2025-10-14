@@ -41,6 +41,10 @@ class UserService {
   async delete(id) {
     return await prisma.user.delete({where: {id: +id}})
   }
+
+  async updateUser(id, data) {
+    return await prisma.user.update({where: {id: +id}, data: data})
+  }
 }
 
 export default new UserService();
