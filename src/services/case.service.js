@@ -135,11 +135,15 @@ class CaseService {
     })
   }
 
-  async assignedCase(id, assigned_employee_id) {
+  async assignedCase(id, userId) {
     return prisma.case.update({
       where: { id: +id },
-      data: { assigned_employee_id: +assigned_employee_id }
+      data: { 
+        assigned_employee_id: +userId
+      }
     })
+
+    
   }
 
   async deleteCase(id) {

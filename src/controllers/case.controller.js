@@ -67,8 +67,8 @@ class CaseController {
   async assignedCase(req, res) {
     try {
       const { id } = req.params;
-      const { assignUserId } = req.body;
-      const updateCase = await caseService.assignedCase(id, assignUserId);
+      const { userId } = req.body;
+      const updateCase = await caseService.assignedCase(id, userId);
       return res.status(200).json({ status: "ok", payload: updateCase});
     } catch (error) {
       console.error(error)
