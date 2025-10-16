@@ -42,7 +42,20 @@ class AuthController {
         }
     }
 
-    
+    async sendResetPasswordToken(req, res) {
+        try {
+            const { email } = req.body;
+            await authService.sendResetPasswordToken(email);
+            return res.status(200).json({ status: "ok", message: "Reset password token sent" });
+        } catch (error) {
+            console.error(error);
+            if (error.message === "USER_NOT_FOUND") {
+                return res.status(404).json({ status: "error", message: "User not found" });
+            }
+            return res.status(500).json({ status: "error", message: "Internal server error" });
+        }
+    }
+
     async activateUser(req, res) {
         try {
             const token = req.query.token;
@@ -93,7 +106,50 @@ class AuthController {
             return res.status(500).json({ status: "error", message: "Internal server error" });
         }
     }
+
+    async resetPassword(req, res) {
+        try {
+            const { password } = req.body;
+            const token = req.query.token;
+
+            if (!token || !password) {
+                return res.status(400).json({ status: "error", message: "Missing token or password" });
+            }
+
+            await authService.resetPassword(token, password);
+
+            return res.status(200).json({
+                status: "ok",
+                message: "Password reset successfully"
+            });
+        } catch (error) {
+            console.error("Reset password error:", error);
+
+            if (error.name === "TokenExpiredError") {
+                return res.status(401).json({ status: "error", message: "Token expired", type: "TOKEN_EXPIRED" });
+            }
+
+            if (error.message === "USER_NOT_FOUND") {
+                return res.status(404).json({ status: "error", message: "User not found" });
+            }
+
+            return res.status(500).json({ status: "error", message: "Internal server error" });
+        }
+    }
+
+
+    async verifyToken(req, res) {
+        try {
+            const token = req.query.token;
+            const verified = await authService.verifyToken(token);
+            return res.status(200).json({ status: "ok", payload: verified });
+        } catch (error) {
+            if (error.name === "TokenExpiredError") {
+                return res.status(401).json({ status: "error", message: "Token expired", type: "TOKEN_EXPIRED" });
+            }
+            return res.status(500).json({ status: "error", message: "Internal server error" });
+        }
+    }
 }
 
-
-export default new AuthController()
+export default new AuthController();

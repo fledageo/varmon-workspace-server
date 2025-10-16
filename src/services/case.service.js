@@ -45,32 +45,6 @@ class CaseService {
     });
   }
 
-  // async getArchiveCases(page, limit) {
-  //   const skip = (page - 1) * limit;
-
-  //   const cases = await prisma.case.findMany({
-  //     where: { status: { in: ["closed", "canceled"] } },
-  //     select: {
-  //       id: true,
-  //       entryDate: true,
-  //       entryNumber: true,
-  //       caseNumber: true,
-  //       investigatedAddress: true,
-  //       assignedEmployee: true,
-  //       status: true,
-  //     },
-  //     skip,
-  //     take: limit,
-  //     orderBy: { entryDate: "desc" },
-  //   });
-
-  //   const total = await prisma.case.count({
-  //     where: { status: { in: ["closed", "canceled"] } },
-  //   });
-
-  //   return { cases, total };
-  // }
-
 
   async getCaseById(id) {
     return prisma.case.findUnique({
@@ -168,7 +142,11 @@ class CaseService {
 
   async getUnpaidCases() {
     return prisma.case.findMany({
-      where: { isPaid: false, payment_type: { not: 'for_free' } },
+      where: {
+        isPaid: false,
+        payment_type: { not: 'for_free' },
+        status: "completed",
+      },
       select: {
         id: true,
         entryNumber: true,
@@ -244,5 +222,47 @@ class CaseService {
     return { cases, total };
   }
 
+  async getUserCases(userId) {
+    const currentCases = await prisma.case.findMany({
+      where: {
+        status: { notIn: ["closed", "canceled"] },
+        assigned_employee_id: +userId,
+      },
+      select: {
+        id: true,
+        entryDate: true,
+        entryNumber: true,
+        caseNumber: true,
+        investigatedAddress: true,
+        assignedEmployee: true,
+        status: true,
+      }
+    });
+
+    const lastFiveClosedCases = await prisma.case.findMany({
+      where: {
+        status: "closed",
+        assigned_employee_id: +userId
+      },
+      orderBy: {
+        closed_at: "desc"
+      },
+      take: 5,
+      select: {
+        id: true,
+        entryDate: true,
+        entryNumber: true,
+        caseNumber: true,
+        investigatedAddress: true,
+        assignedEmployee: true,
+        status: true,
+      }
+    });
+
+    return {
+      currentCases,
+      lastFiveClosedCases
+    }
+  }
 }
 export default new CaseService();

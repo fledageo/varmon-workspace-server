@@ -11,6 +11,17 @@ class StatsController {
         }
     }
 
+    async getUserStats(req, res) {
+        try {
+            const { userId } = req.params;
+            const stats = await StatsService.getUserStats(userId);
+            return res.json({ status: "ok", payload: stats })
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ status: "error", message: "Something went wrong" });
+        }
+    }
+
     async getYearlyProfit(req, res) {
         try {
             const YearlyProfitData = await StatsService.getYearlyProfitData()
@@ -27,6 +38,17 @@ class StatsController {
             return res.json({ status: "ok", payload: YearlyCasesCount })
         } catch (err) {
             console.error(err)
+            res.status(500).json({ status: "error", message: "Something went wrong" })
+        }
+    }
+
+    async getUserYearlyCasesCount(req, res) {
+        try {
+            const { userId } = req.params
+            const UserYearlyCasesCount = await StatsService.getUserYearlyCasesCount(userId)
+            return res.status(200).json({ status: "ok", payload: UserYearlyCasesCount })
+        } catch (error) {
+            console.error(error)
             res.status(500).json({ status: "error", message: "Something went wrong" })
         }
     }
