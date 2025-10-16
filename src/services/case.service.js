@@ -88,32 +88,44 @@ class CaseService {
   }
 
   async changeStatus(caseId, status) {
+    let closed_at = null;
 
-    const closed_at = status === "closed" ? new Date(Date.now()) : null
+    if (status === "closed") {
+      closed_at = new Date();
+
+      const currentCase = await prisma.case.findUnique({ where: { id: +caseId } });
+
+      if (!currentCase) {
+        return { status: "error", message: "Case not found" };
+      }
+
+      if (currentCase.isPaid === false) {
+        return { status: "error", message: "Case is not paid" };
+      }
+    }
 
     return prisma.case.update({
       where: { id: +caseId },
+      data: { status, closed_at },
+    });
+  }
+
+  async setCasePaid(id) {
+    return prisma.case.update({
+      where: { id: +id },
+      data: { isPaid: { set: true } }
+    })
+  }
+
+  async assignCase(id, userId) {
+    return prisma.case.update({
+      where: { id: +id },
       data: {
-        status,
-        closed_at: closed_at
+        assigned_employee_id: userId ? +userId : null
       }
     })
-  }
 
-  async toggleCasePaid(id) {
-    const isPaid = await prisma.case.findUnique({ where: { id: +id } }).isPaid
 
-    return prisma.case.update({
-      where: { id: +id },
-      data: { isPaid: { set: !isPaid } }
-    })
-  }
-
-  async assignedCase(id, assigned_employee_id) {
-    return prisma.case.update({
-      where: { id: +id },
-      data: { assigned_employee_id: +assigned_employee_id }
-    })
   }
 
   async deleteCase(id) {
@@ -168,14 +180,55 @@ class CaseService {
         id: true,
         entryNumber: true,
         caseNumber: true,
-        price: true,
-        payment_type: true,
-        isPaid: true,
-        assignedEmployee: true,
+        investigatedAddress: true,
       }
     })
   }
 
+  async getUserCases(userId) {
+    const currentCases = await prisma.case.findMany({
+      where: {
+        status: { notIn: ["closed", "canceled"] },
+        assigned_employee_id: +userId,
+      },
+      select: {
+        id: true,
+        entryDate: true,
+        entryNumber: true,
+        caseNumber: true,
+        investigatedAddress: true,
+        assignedEmployee: true,
+        status: true,
+      }
+    });
+
+    const lastFiveClosedCases = await prisma.case.findMany({
+      where: {
+        status: "closed",
+        assigned_employee_id: +userId
+      },
+      orderBy: {
+        closed_at: "desc"
+      },
+      take: 5,
+      select: {
+        id: true,
+        entryDate: true,
+        entryNumber: true,
+        caseNumber: true,
+        investigatedAddress: true,
+        assignedEmployee: true,
+        status: true,
+      }
+    });
+
+    return {
+      currentCases,
+      lastFiveClosedCases
+    }
+  }
+
+  
   async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
     const skip = (page - 1) * limit;
 
@@ -214,7 +267,15 @@ class CaseService {
         where,
         skip,
         take: +limit,
-        orderBy: { entryDate: 'desc' }
+        orderBy: { entryDate: 'desc' },
+        include: {
+          assignedEmployee: {
+            select: {
+              first_name: true,
+              last_name: true,
+            },
+          },
+        },
       }),
       prisma.case.count({ where })
     ])

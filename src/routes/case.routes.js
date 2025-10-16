@@ -18,8 +18,8 @@ caseRouter.get("/archive", authToken, CaseController.getArchiveCases);
 
 caseRouter.delete("/case/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
 caseRouter.patch("/status/:id", authToken, CaseController.changeCaseStatus);
-caseRouter.patch("/paid/:id", authToken, checkRole(["admin"]), CaseController.toggleCasePaid);
+caseRouter.patch("/paid/:id", authToken, checkRole(["admin"]), CaseController.setCasePaid);
 caseRouter.put("/:id", authToken, CaseController.updateCase);
-caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.assignedCase);
+caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.assignCase);
 
 export default caseRouter;

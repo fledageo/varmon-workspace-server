@@ -47,16 +47,17 @@ class CaseController {
 
     try {
       const updatedCase = await caseService.changeStatus(req.params.id, status)
-      return res.status(200).json({ status: "ok", payload: updatedCase });
+      return res.status(200).json(updatedCase)
+    
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
     }
   }
 
-  async toggleCasePaid(req, res) {
+  async setCasePaid(req, res) {
     try {
-      const updatedCase = await caseService.toggleCasePaid(req.params.id)
+      const updatedCase = await caseService.setCasePaid(req.params.id)
       return res.status(200).json({ status: "ok", payload: updatedCase });
     } catch (error) {
       console.error(error);
@@ -64,11 +65,11 @@ class CaseController {
     }
   }
 
-  async assignedCase(req, res) {
+  async assignCase(req, res) {
     try {
       const { id } = req.params;
-      const { assignUserId } = req.body;
-      const updateCase = await caseService.assignedCase(id, assignUserId);
+      const { userId } = req.body;
+      const updateCase = await caseService.assignCase(id, userId);
       return res.status(200).json({ status: "ok", payload: updateCase});
     } catch (error) {
       console.error(error)
