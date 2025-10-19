@@ -45,32 +45,6 @@ class CaseService {
     });
   }
 
-  // async getArchiveCases(page, limit) {
-  //   const skip = (page - 1) * limit;
-
-  //   const cases = await prisma.case.findMany({
-  //     where: { status: { in: ["closed", "canceled"] } },
-  //     select: {
-  //       id: true,
-  //       entryDate: true,
-  //       entryNumber: true,
-  //       caseNumber: true,
-  //       investigatedAddress: true,
-  //       assignedEmployee: true,
-  //       status: true,
-  //     },
-  //     skip,
-  //     take: limit,
-  //     orderBy: { entryDate: "desc" },
-  //   });
-
-  //   const total = await prisma.case.count({
-  //     where: { status: { in: ["closed", "canceled"] } },
-  //   });
-
-  //   return { cases, total };
-  // }
-
 
   async getCaseById(id) {
     return prisma.case.findUnique({
@@ -146,10 +120,12 @@ class CaseService {
   async assignCase(id, userId) {
     return prisma.case.update({
       where: { id: +id },
-      data: { 
-        assigned_employee_id: +userId
+      data: {
+        assigned_employee_id: userId ? +userId : null
       }
     })
+
+    
   }
 
   async deleteCase(id) {
@@ -181,7 +157,7 @@ class CaseService {
       where: {
         isPaid: false,
         payment_type: { not: 'for_free' },
-        status: { not: "waiting" }
+        status: "completed",
       },
       select: {
         id: true,
@@ -204,10 +180,7 @@ class CaseService {
         id: true,
         entryNumber: true,
         caseNumber: true,
-        price: true,
-        payment_type: true,
-        isPaid: true,
-        assignedEmployee: true,
+        investigatedAddress: true,
       }
     })
   }
@@ -215,7 +188,7 @@ class CaseService {
   async getUserCases(userId) {
     const currentCases = await prisma.case.findMany({
       where: {
-        status: { notIn: ["closed", "canceled"]},
+        status: { notIn: ["closed", "canceled"] },
         assigned_employee_id: +userId,
       },
       select: {
@@ -250,10 +223,12 @@ class CaseService {
     });
 
     return {
-      currentCases, 
+      currentCases,
       lastFiveClosedCases
     }
   }
+=========
+>>>>>>>>> Temporary merge branch 2
   async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
     const skip = (page - 1) * limit;
 
@@ -292,7 +267,15 @@ class CaseService {
         where,
         skip,
         take: +limit,
-        orderBy: { entryDate: 'desc' }
+        orderBy: { entryDate: 'desc' },
+        include: {
+          assignedEmployee: {
+            select: {
+              first_name: true,
+              last_name: true,
+            },
+          },
+        },
       }),
       prisma.case.count({ where })
     ])

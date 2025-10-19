@@ -1,7 +1,7 @@
 import prisma from "../../prisma/prismaClient.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import sendMail from "../utils/mailSender.js";
+import { sendMail } from "../utils/mailSender.js";
 
 class AuthService {
   async login(email, password) {
@@ -54,6 +54,16 @@ class AuthService {
 
     return createdUser;
   }
+  async sendResetPasswordToken(email) {
+    const foundUser = await prisma.user.findUnique({ where: { email } });
+    if (!foundUser) throw new Error("USER_NOT_FOUND");
+
+    const resetToken = jwt.sign({ id: foundUser.id }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    const sent = await sendMail(foundUser.id, foundUser.email, resetToken, "reset");
+
+    if (!sent) throw new Error("Failed to send reset email");
+    return foundUser;
+  }
 
   async activateUser(token, passwordData) {
     const { id } = jwt.decode(token, process.env.SECRET_KEY);
@@ -89,6 +99,35 @@ class AuthService {
     if (!foundUser) throw new Error("USER_NOT_FOUND");
 
     return foundUser;
+  }
+
+  async resetPassword(token, password) {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+      const user = await prisma.user.findUnique({ where: { id: decoded.id } });
+      if (!user) throw new Error("USER_NOT_FOUND");
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      await prisma.user.update({
+        where: { id: decoded.id },
+        data: { password: hashedPassword },
+      });
+
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async verifyToken(token) {
+    try {
+      const decoded = jwt.verify(token, process.env.SECRET_KEY);
+      return decoded;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 

@@ -6,7 +6,7 @@ class UserService {
   async getUserById(id) {
     const user = await prisma.user.findUnique({
       where: { id: +id },
-      select: { id: true, first_name: true, last_name: true, email: true, status: true}
+      select: { id: true, first_name: true, last_name: true, email: true, status: true }
     });
     if (!user) throw new Error("User with this id not found");
     return user;
@@ -22,16 +22,13 @@ class UserService {
         email: true,
         role: true,
         status: true,
-        cases: {
-          where: {
-            status: { notIn: ["canceled", "closed"] } 
-          },
+        _count: {
           select: {
-            id: true,
-            caseNumber: true,
-            status: true,
-            assigned_employee_id: true,
-            closed_at: true,
+            cases: {
+              where: {
+                status: { notIn: ["canceled", "closed"] }
+              },
+            },
           },
         },
       },
@@ -39,11 +36,11 @@ class UserService {
   }
 
   async delete(id) {
-    return await prisma.user.delete({where: {id: +id}})
+    return await prisma.user.delete({ where: { id: +id } })
   }
 
   async updateUser(id, data) {
-    return await prisma.user.update({where: {id: +id}, data: data})
+    return await prisma.user.update({ where: { id: +id }, data: data })
   }
 }
 
