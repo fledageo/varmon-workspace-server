@@ -227,8 +227,7 @@ class CaseService {
       lastFiveClosedCases
     }
   }
-=========
->>>>>>>>> Temporary merge branch 2
+
   async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
     const skip = (page - 1) * limit;
 
