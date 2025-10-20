@@ -47,7 +47,7 @@ class AuthService {
       }
     });
 
-    const activationToken = jwt.sign({ id: createdUser.id }, process.env.SECRET_KEY, { expiresIn: "1h" });
+    const activationToken = jwt.sign({ id: createdUser.id }, process.env.SECRET_KEY);
 
     const sent = await sendMail(createdUser.id, createdUser.email, activationToken, "invite");
     if (!sent) throw new Error("Failed to send invite email");
@@ -92,7 +92,8 @@ class AuthService {
         id: true,
         first_name: true,
         last_name: true,
-        role: true
+        role: true,
+        email: true
       }
     });
 
@@ -128,6 +129,22 @@ class AuthService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async updatePassword(userId, oldPassword, newPassword) {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return {status: "error", message: "User not found"};
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+    if (!isPasswordValid) return {status: "error", message: "Invalid old password"};
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    return {status: "ok", message: "Password updated successfully"};
   }
 }
 
