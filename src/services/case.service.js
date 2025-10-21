@@ -228,7 +228,7 @@ class CaseService {
     }
   }
 
-  
+
   async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
     const skip = (page - 1) * limit;
 
@@ -324,6 +324,15 @@ class CaseService {
       currentCases,
       lastFiveClosedCases
     }
+  }
+
+  async getInProgressCases(id) {  
+    return prisma.case.findMany({
+      where: {
+        status: "in_progress",
+        assigned_employee_id: +id
+      }
+    });
   }
 }
 export default new CaseService();

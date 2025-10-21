@@ -203,6 +203,17 @@ class CaseController {
     }
   }
 
+
+
+  async getInProgressCases(req, res) {
+    try {
+      const cases = await caseService.getInProgressCases(req.params.id);
+      return res.json({ status: "ok", payload: cases })
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
 }
 
 export default new CaseController();

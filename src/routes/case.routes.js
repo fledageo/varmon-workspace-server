@@ -22,4 +22,7 @@ caseRouter.patch("/paid/:id", authToken, checkRole(["admin"]), CaseController.se
 caseRouter.put("/:id", authToken, CaseController.updateCase);
 caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.assignCase);
 
+caseRouter.get("/in-progress/:id", authToken, CaseController.getInProgressCases);
+
+
 export default caseRouter;
