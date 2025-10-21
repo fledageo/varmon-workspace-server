@@ -125,7 +125,7 @@ class CaseService {
       }
     })
 
-
+    
   }
 
   async deleteCase(id) {
@@ -228,7 +228,6 @@ class CaseService {
     }
   }
 
-
   async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
     const skip = (page - 1) * limit;
 
@@ -245,6 +244,61 @@ class CaseService {
     }));
 
     const where = {
+      status: { in: ["closed", "canceled"] },
+      ...(search ? { OR: orFilters } : {})
+    };
+
+    if (startDate || endDate) {
+      const entryDate = {};
+      if (startDate) {
+        entryDate.gte = new Date(startDate);
+      }
+      if (endDate) {
+        const end = new Date(endDate);
+        end.setHours(23, 59, 59, 999);
+        entryDate.lte = end;
+      }
+      where.entryDate = entryDate;
+    }
+
+    const [cases, total] = await Promise.all([
+      prisma.case.findMany({
+        where,
+        skip,
+        take: +limit,
+        orderBy: { entryDate: 'desc' },
+        include: {
+          assignedEmployee: {
+            select: {
+              first_name: true,
+              last_name: true,
+            },
+          },
+        },
+      }),
+      prisma.case.count({ where })
+    ])
+
+    return { cases, total };
+  }
+
+  async getUserArchiveCases(userId, page = 1, limit = 10, search = '', startDate, endDate) {
+    const skip = (page - 1) * limit;
+
+    const searchableFields = [
+      "judge",
+      "entryNumber",
+      "caseNumber",
+      "plaintiff",
+      "defendant",
+    ];
+
+    const orFilters = searchableFields.map(field => ({
+      [field]: { contains: search, mode: "insensitive" }
+    }));
+
+    const where = {
+      assigned_employee_id: +userId,
       status: { in: ["closed", "canceled"] },
       ...(search ? { OR: orFilters } : {})
     };
