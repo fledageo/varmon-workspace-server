@@ -203,6 +203,18 @@ class CaseController {
     }
   }
 
+  async getUserArchiveCases(req, res) {
+    try {
+      const { page, limit, search, startDate, endDate } = req.query;
+      const { userId } = req.params;
+      const data = await caseService.getUserArchiveCases(userId, page, limit, search, startDate, endDate);
+      return res.status(200).json({ status: "ok", payload: data });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "error", message: "Something went wrong" })
+    }
+  }
+
 }
 
 export default new CaseController();

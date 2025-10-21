@@ -13,8 +13,8 @@ caseRouter.get("/unpaid", authToken,checkRole(["admin"]), CaseController.getUnpa
 caseRouter.get("/get/waiting", authToken,checkRole(["admin"]), CaseController.getWaitingCases);
 caseRouter.get("/user/:userId", authToken, checkRole(["admin"]), CaseController.getUserCases);
 caseRouter.get("/case/:id", authToken, CaseController.getCaseById);
-caseRouter.get("/archive", authToken, CaseController.getArchiveCases);
-
+caseRouter.get("/archive", authToken, checkRole(["admin"]), CaseController.getArchiveCases);
+caseRouter.get("/archive/:userId", authToken, CaseController.getUserArchiveCases);
 
 caseRouter.delete("/case/:id", authToken, checkRole(["admin"]), CaseController.deleteCase);
 caseRouter.patch("/status/:id", authToken, CaseController.changeCaseStatus);
