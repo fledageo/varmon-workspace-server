@@ -16,6 +16,7 @@ export const getTransporter = () => {
   });
 };
 
+
 export const sendMail = async (userId, email, token, type) => {
   const transporter = getTransporter();
   let activationLink;

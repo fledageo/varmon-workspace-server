@@ -40,7 +40,17 @@ class UserService {
   }
 
   async updateUser(id, data) {
-    return await prisma.user.update({ where: { id: +id }, data: data })
+    return await prisma.user.update({
+      where: { id: +id }, 
+      data: data,
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        email: true,
+        role: true,
+      }
+    })
   }
 }
 

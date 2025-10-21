@@ -150,6 +150,23 @@ class AuthController {
             return res.status(500).json({ status: "error", message: "Internal server error" });
         }
     }
+
+    async updatePassword(req, res) {
+        try {
+            const { old_password, new_password } = req.body;
+            const { user_id } = req.user;
+            const result = await authService.updatePassword(user_id, old_password, new_password);
+            
+            if (result.status === "ok") {
+                return res.status(200).json(result);
+            }else{
+                return res.status(400).json(result);
+            }
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ status: "error", message: "Internal server error" });
+        }
+    }
 }
 
 export default new AuthController();
