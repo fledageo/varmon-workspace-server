@@ -48,7 +48,7 @@ class CaseController {
     try {
       const updatedCase = await caseService.changeStatus(req.params.id, status)
       return res.status(200).json(updatedCase)
-    
+
     } catch (error) {
       console.error(error);
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
@@ -70,7 +70,7 @@ class CaseController {
       const { id } = req.params;
       const { userId } = req.body;
       const updateCase = await caseService.assignCase(id, userId);
-      return res.status(200).json({ status: "ok", payload: updateCase});
+      return res.status(200).json({ status: "ok", payload: updateCase });
     } catch (error) {
       console.error(error)
       return res.status(500).json({ status: "error", message: "Something went wrong!" });
@@ -113,11 +113,18 @@ class CaseController {
   async getUserCases(req, res) {
     try {
       const { userId } = req.params;
+      const role = req.user.role;
+
+      if (role === "admin") {
+        const cases = await caseService.getUserProfileCases(userId);
+        return res.status(200).json({ status: "ok", payload: cases })
+      }
       const cases = await caseService.getUserCases(userId);
       return res.status(200).json({ status: "ok", payload: cases })
+
     } catch (err) {
       console.error(err);
-      res.status(500).json({ status: "error", message: "Something went wrong "});
+      res.status(500).json({ status: "error", message: "Something went wrong " });
     }
   }
 
@@ -205,16 +212,25 @@ class CaseController {
 
 
 
-  async getInProgressCases(req, res) {
-    try {
-      const cases = await caseService.getInProgressCases(req.params.id);
-      return res.json({ status: "ok", payload: cases })
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ status: "error", message: "Something went wrong" })
-    }
-  }
+  // async getUserCurrentCases(req, res) {
+  //   try {
+  //     const cases = await caseService.getUserCurrentCases(req.params.userId);
+  //     return res.json({ status: "ok", payload: cases })
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ status: "error", message: "Something went wrong" })
+  //   }
+  // }
 
+  // async getUserWaitingCases(req, res) {
+  //   try {
+  //     const cases = await caseService.getUserWaitingCases(req.params.userId);
+  //     return res.json({ status: "ok", payload: cases })
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ status: "error", message: "Something went wrong" })
+  //   }
+  // }
   async getUserArchiveCases(req, res) {
     try {
       const { page, limit, search, startDate, endDate } = req.query;

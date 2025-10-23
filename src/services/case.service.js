@@ -337,7 +337,7 @@ class CaseService {
     return { cases, total };
   }
 
-  async getUserCases(userId) {
+  async getUserProfileCases(userId) {
     const currentCases = await prisma.case.findMany({
       where: {
         status: { notIn: ["closed", "canceled"] },
@@ -380,13 +380,32 @@ class CaseService {
     }
   }
 
-  async getInProgressCases(id) {  
+
+  async getUserCases(userId) {
     return prisma.case.findMany({
       where: {
-        status: "in_progress",
-        assigned_employee_id: +id
+        assigned_employee_id: +userId,
+        status: { notIn: ["closed", "canceled"] }
       }
     });
   }
+
+  // async getUserCurrentCases(id) {  
+  //   return prisma.case.findMany({
+  //     where: {
+  //       status: {in: ["in_progress", "completed"]},
+  //       assigned_employee_id: +id
+  //     }
+  //   });
+  // }
+
+  // async getUserWaitingCases(id) {
+  //   return prisma.case.findMany({
+  //     where: {
+  //       status: "waiting",
+  //       assigned_employee_id: +id
+  //     }
+  //   });
+  // }
 }
 export default new CaseService();
