@@ -228,7 +228,7 @@ class CaseService {
     }
   }
 
-  async getArchiveCases(page = 1, limit = 10, search = '', startDate, endDate) {
+  async getArchiveCases(page = 1, limit = 10, assignEmployeeId, search = '', startDate, endDate) {
     const skip = (page - 1) * limit;
 
     const searchableFields = [
@@ -247,6 +247,10 @@ class CaseService {
       status: { in: ["closed", "canceled"] },
       ...(search ? { OR: orFilters } : {})
     };
+
+    if (assignEmployeeId) {
+      where.assigned_employee_id = +assignEmployeeId;
+    }
 
     if (startDate || endDate) {
       const entryDate = {};
