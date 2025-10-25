@@ -8,7 +8,7 @@ const authToken = (req, res, next) => {
         req.user = verified;
         next();
     } catch (error) {
-        req.user = null;
+        return res.status(401).json({ status: "error", message: "Invalid token" });
     }
 };
 
