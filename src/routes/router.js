@@ -6,7 +6,7 @@ import fileRouter from "./file.route.js";
 import expenditureRouter from "./expenditure.routes.js";
 import noteRouter from "./note.routes.js";
 import statsRouter from "./stats.routes.js";
-import dashboardRouter from "./dashboard.router.js";
+import dashboardRouter from "./dashboard.routes.js";
 
 const router = e.Router()
 router.use('/auth', authRouter)
