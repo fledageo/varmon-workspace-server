@@ -201,8 +201,8 @@ class CaseController {
 
   async getArchiveCases(req, res) {
     try {
-      const { page, limit, search, startDate, endDate } = req.query;
-      const data = await caseService.getArchiveCases(page, limit, search, startDate, endDate);
+      const { page, limit, assignEmployeeId, search, startDate, endDate } = req.query;
+      const data = await caseService.getArchiveCases(page, limit, assignEmployeeId, search, startDate, endDate);
       return res.json({ status: "ok", payload: data })
     } catch (error) {
       console.error(error);
