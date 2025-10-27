@@ -31,7 +31,7 @@ class AuthService {
   async inviteUser(newUser) {
 
     const isExist = await prisma.user.findUnique({ where: { email: newUser.email } });
-    if (isExist) throw new Error("User with this email already exists");
+    if (isExist) return null;
 
     const createdUser = await prisma.user.create({
       data: {
@@ -43,7 +43,8 @@ class AuthService {
         id: true,
         first_name: true,
         last_name: true,
-        email: true
+        email: true,
+        status: true
       }
     });
 

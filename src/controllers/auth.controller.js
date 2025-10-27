@@ -35,10 +35,11 @@ class AuthController {
         try {
             const { newUser } = req.body;
             const user = await authService.inviteUser(newUser);
+            if(!user) return res.status(400).json({ status: "error", message: "User with this email already exists", code: "EMAIL_EXIST" })
             return res.status(200).json({ status: "ok", payload: user, message: "Invitation sent" });
         } catch (error) {
-            console.error(error);
-            return res.status(500).json({ status: "error", message: error.message || "Something went wrong!" });
+            console.error(error.message);
+            return res.status(500).json({ status: "error", message: "Something went wrong!" });
         }
     }
 
