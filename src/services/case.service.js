@@ -99,7 +99,7 @@ class CaseService {
         return { status: "error", message: "Case not found" };
       }
 
-      if (currentCase.isPaid === false) {
+      if (currentCase.isPaid === false && currentCase.payment_type !== 'for_free') {
         return { status: "error", message: "Case is not paid" };
       }
     }
