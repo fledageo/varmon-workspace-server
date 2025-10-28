@@ -52,6 +52,10 @@ class UserService {
       }
     })
   }
+
+  async getUserActivation(userId) {
+    return await prisma.user.findUnique({ where: { id: +userId }, select: { email: true } })
+  }
 }
 
 export default new UserService();

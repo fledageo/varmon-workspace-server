@@ -47,7 +47,12 @@ class CaseController {
 
     try {
       const updatedCase = await caseService.changeStatus(req.params.id, status)
-      return res.status(200).json(updatedCase)
+
+      if(updatedCase.status && updatedCase.status === "error") {
+        return res.status(400).json({status: "error", message: updatedCase.message})
+      }
+      
+      return res.status(200).json({status: "ok", payload: updatedCase})
 
     } catch (error) {
       console.error(error);
@@ -211,26 +216,6 @@ class CaseController {
   }
 
 
-
-  // async getUserCurrentCases(req, res) {
-  //   try {
-  //     const cases = await caseService.getUserCurrentCases(req.params.userId);
-  //     return res.json({ status: "ok", payload: cases })
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ status: "error", message: "Something went wrong" })
-  //   }
-  // }
-
-  // async getUserWaitingCases(req, res) {
-  //   try {
-  //     const cases = await caseService.getUserWaitingCases(req.params.userId);
-  //     return res.json({ status: "ok", payload: cases })
-  //   } catch (error) {
-  //     console.error(error);
-  //     res.status(500).json({ status: "error", message: "Something went wrong" })
-  //   }
-  // }
   async getUserArchiveCases(req, res) {
     try {
       const { page, limit, search, startDate, endDate } = req.query;
