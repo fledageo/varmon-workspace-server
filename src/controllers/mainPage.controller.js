@@ -1,7 +1,7 @@
 import statsService from "../services/stats.service.js";
 import caseService from "../services/case.service.js";
 
-class DashboardController {
+class MainPageDataController {
     async getDashboardData(req, res) {
         try {
             let aborted = false;
@@ -33,6 +33,37 @@ class DashboardController {
             res.status(500).json({ status: "error", message: "Something went wrong" });
         }
     }
+
+    async getProfileData(req, res) {
+        try {
+            const { userId } = req.params;
+            let aborted = false;
+            req.on("aborted", () => aborted = true);
+
+            const promise = {
+                stats: statsService.getUserStats(userId),
+                yearlyCasesChart: statsService.getUserYearlyCasesCount(userId)
+            }
+
+            const result = await Promise.allSettled(Object.values(promise));
+            
+            if(aborted) return;
+
+            const data = {};
+
+            Object.keys(promise).forEach((key, i) => {
+                const r = result[i];
+                if(r.status === 'fulfilled') data[key] = r.value;
+                else console.error("Profile error", key, r.reason);
+            })
+
+            return res.status(200).json({ status: "ok", payload: data });
+        } catch (err) {
+            if (req.aborted) return;
+            console.error(err);
+            res.status(500).json({ status: "error", message: "Something went wrong" });
+        }
+    }
 }
 
-export default new DashboardController();
+export default new MainPageDataController();

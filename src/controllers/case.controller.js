@@ -119,15 +119,20 @@ class CaseController {
     try {
       const { userId } = req.params;
       const role = req.user.role;
+      let aborted = false;
+      req.on("aborted", () => (aborted = true));
 
       if (role === "admin") {
         const cases = await caseService.getUserProfileCases(userId);
         return res.status(200).json({ status: "ok", payload: cases })
       }
+
       const cases = await caseService.getUserCases(userId);
+      if (aborted) return;
       return res.status(200).json({ status: "ok", payload: cases })
 
     } catch (err) {
+      if (req.aborted) return;
       console.error(err);
       res.status(500).json({ status: "error", message: "Something went wrong " });
     }
