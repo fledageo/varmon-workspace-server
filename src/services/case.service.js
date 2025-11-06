@@ -100,7 +100,7 @@ class CaseService {
       }
 
       if (currentCase.isPaid === false && currentCase.payment_type !== 'for_free') {
-        return { status: "error", message: "Case is not paid" };
+        return { status: "error", message: "Case is not paid", code: "IS_NOT_PAID" };
       }
     }
 
@@ -122,10 +122,11 @@ class CaseService {
       where: { id: +id },
       data: {
         assigned_employee_id: userId ? +userId : null
+      },
+      include: {
+        assignedEmployee: true,
       }
     })
-
-    
   }
 
   async deleteCase(id) {
@@ -186,7 +187,8 @@ class CaseService {
   }
 
   async getUserCases(userId) {
-    const currentCases = await prisma.case.findMany({
+
+    const cases = await prisma.case.findMany({
       where: {
         status: { notIn: ["closed", "canceled"] },
         assigned_employee_id: +userId,
@@ -202,29 +204,10 @@ class CaseService {
       }
     });
 
-    const lastFiveClosedCases = await prisma.case.findMany({
-      where: {
-        status: "closed",
-        assigned_employee_id: +userId
-      },
-      orderBy: {
-        closed_at: "desc"
-      },
-      take: 5,
-      select: {
-        id: true,
-        entryDate: true,
-        entryNumber: true,
-        caseNumber: true,
-        investigatedAddress: true,
-        assignedEmployee: true,
-        status: true,
-      }
-    });
 
     return {
-      currentCases,
-      lastFiveClosedCases
+      currentCases: cases.filter(item => item.status !== "waiting"),
+      waitingCases: cases.filter(item => item.status === "waiting"),
     }
   }
 
@@ -384,32 +367,5 @@ class CaseService {
     }
   }
 
-
-  async getUserCases(userId) {
-    return prisma.case.findMany({
-      where: {
-        assigned_employee_id: +userId,
-        status: { notIn: ["closed", "canceled"] }
-      }
-    });
-  }
-
-  // async getUserCurrentCases(id) {  
-  //   return prisma.case.findMany({
-  //     where: {
-  //       status: {in: ["in_progress", "completed"]},
-  //       assigned_employee_id: +id
-  //     }
-  //   });
-  // }
-
-  // async getUserWaitingCases(id) {
-  //   return prisma.case.findMany({
-  //     where: {
-  //       status: "waiting",
-  //       assigned_employee_id: +id
-  //     }
-  //   });
-  // }
 }
 export default new CaseService();

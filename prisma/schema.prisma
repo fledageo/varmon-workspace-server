@@ -70,6 +70,14 @@ model File {
   case        Case @relation("CaseFiles", fields: [case_id], references: [id], onDelete: Cascade)
 }
 
+model Notification {
+  id          Int      @id @default(autoincrement())
+  first_name  String
+  last_name   String
+  email       String
+  phone       String
+}
+
 enum Role {
   admin
   user

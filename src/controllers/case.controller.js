@@ -46,13 +46,13 @@ class CaseController {
     const { status } = req.body
 
     try {
-      const updatedCase = await caseService.changeStatus(req.params.id, status)
+      const result = await caseService.changeStatus(req.params.id, status)
 
-      if(updatedCase.status && updatedCase.status === "error") {
-        return res.status(400).json({status: "error", message: updatedCase.message})
+      if (result.status && result.status === "error") {
+        return res.status(400).json(result)
       }
-      
-      return res.status(200).json({status: "ok", payload: updatedCase})
+
+      return res.status(200).json({ status: "ok", payload: result })
 
     } catch (error) {
       console.error(error);
@@ -118,16 +118,11 @@ class CaseController {
   async getUserCases(req, res) {
     try {
       const { userId } = req.params;
-      const role = req.user.role;
+
       let aborted = false;
       req.on("aborted", () => (aborted = true));
-
-      if (role === "admin") {
-        const cases = await caseService.getUserProfileCases(userId);
-        return res.status(200).json({ status: "ok", payload: cases })
-      }
-
       const cases = await caseService.getUserCases(userId);
+
       if (aborted) return;
       return res.status(200).json({ status: "ok", payload: cases })
 
@@ -135,6 +130,16 @@ class CaseController {
       if (req.aborted) return;
       console.error(err);
       res.status(500).json({ status: "error", message: "Something went wrong " });
+    }
+  }
+
+  async getUserProfileCases(req, res) {
+    try {
+      const cases = await caseService.getUserProfileCases(req.params.userId);
+      return res.status(200).json({ status: "ok", payload: cases });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ status: "error", message: "Something went wrong" });
     }
   }
 

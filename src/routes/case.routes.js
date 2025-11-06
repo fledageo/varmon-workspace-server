@@ -22,6 +22,6 @@ caseRouter.patch("/assign/:id", authToken, checkRole(["admin"]), CaseController.
 caseRouter.put("/:id", authToken, CaseController.updateCase);
 
 caseRouter.get("/user/:userId", authToken, CaseController.getUserCases);
-
+caseRouter.get("/user/profile/:userId", authToken, checkRole(["admin"]), CaseController.getUserProfileCases);
 
 export default caseRouter;
