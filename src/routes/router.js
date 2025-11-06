@@ -7,6 +7,7 @@ import expenditureRouter from "./expenditure.routes.js";
 import noteRouter from "./note.routes.js";
 import statsRouter from "./stats.routes.js";
 import mainPageRouter from "./mainPage.routes.js";
+import publicFormRouter from "./publicForm.router.js"
 
 const router = e.Router()
 router.use('/auth', authRouter)
@@ -17,6 +18,7 @@ router.use('/expenditure', expenditureRouter)
 router.use('/note', noteRouter)
 router.use('/stats', statsRouter)
 router.use('/main', mainPageRouter)
+router.use('/public/form', publicFormRouter)
 
 
 export default router 

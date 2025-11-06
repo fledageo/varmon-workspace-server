@@ -100,7 +100,7 @@ class CaseService {
       }
 
       if (currentCase.isPaid === false && currentCase.payment_type !== 'for_free') {
-        return { status: "error", message: "Case is not paid", code: "IS_NOT_PAID" };
+        return { status: "error", message: "Case is not paid" , code: "IS_NOT_PAID"};
       }
     }
 
