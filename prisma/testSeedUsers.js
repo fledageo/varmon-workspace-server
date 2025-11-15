@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-import usersData from "./SeedData/users.js"
+const { PrismaClient } = require('@prisma/client');
+const usersData = require("./SeedData/users.js");
 
 const prisma = new PrismaClient()
 async function main() {

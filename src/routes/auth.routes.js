@@ -1,7 +1,7 @@
-import e from "express";
-import AuthController from "../controllers/auth.controller.js";
-import authToken from "../middlewares/authToken.js";
-import checkRole from "../middlewares/checkRole.js";
+const e = require("express");
+const AuthController = require("../controllers/auth.controller.js");
+const authToken = require("../middlewares/authToken.js");
+const checkRole = require("../middlewares/checkRole.js");
 
 const authRouter = e.Router()
 authRouter.post("/login", AuthController.login)
@@ -16,4 +16,4 @@ authRouter.patch("/update-password", authToken, AuthController.updatePassword)
 
 
 
-export default authRouter
+module.exports = authRouter;

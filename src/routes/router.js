@@ -1,12 +1,12 @@
-import e from "express";
-import authRouter from "./auth.routes.js";
-import userRouter from "./user.routes.js";
-import caseRouter from "./case.routes.js";
-import fileRouter from "./file.route.js";
-import expenditureRouter from "./expenditure.routes.js";
-import noteRouter from "./note.routes.js";
-import statsRouter from "./stats.routes.js";
-import mainPageRouter from "./mainPage.routes.js";
+const e = require("express");
+const authRouter = require("./auth.routes.js");
+const userRouter = require("./user.routes.js");
+const caseRouter = require("./case.routes.js");
+const fileRouter = require("./file.route.js");
+const expenditureRouter = require("./expenditure.routes.js");
+const noteRouter = require("./note.routes.js");
+const statsRouter = require("./stats.routes.js");
+const mainPageRouter = require("./mainPage.routes.js");
 
 const router = e.Router()
 router.use('/auth', authRouter)
@@ -19,4 +19,4 @@ router.use('/stats', statsRouter)
 router.use('/main', mainPageRouter)
 
 
-export default router 
+module.exports = router;

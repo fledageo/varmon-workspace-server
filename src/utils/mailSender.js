@@ -1,6 +1,6 @@
-import nodemailer from "nodemailer";
+const nodemailer = require("nodemailer");
 
-export const getTransporter = () => {
+const getTransporter = () => {
   if (!process.env.EMAIL || !process.env.EMAIL_PASSWORD) {
     throw new Error("Missing EMAIL or EMAIL_PASSWORD in env");
   }
@@ -17,7 +17,7 @@ export const getTransporter = () => {
 };
 
 
-export const sendMail = async (userId, email, token, type) => {
+const sendMail = async (userId, email, token, type) => {
   const transporter = getTransporter();
   let activationLink;
 
@@ -40,3 +40,6 @@ export const sendMail = async (userId, email, token, type) => {
 
   return transporter.sendMail(mail);
 };
+
+exports.getTransporter = getTransporter;
+exports.sendMail = sendMail;

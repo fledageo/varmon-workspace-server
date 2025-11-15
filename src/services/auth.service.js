@@ -1,7 +1,7 @@
-import prisma from "../../prisma/prismaClient.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { sendMail } from "../utils/mailSender.js";
+const prisma = require("../../prisma/prismaClient.js");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { sendMail } = require("../utils/mailSender.js");
 
 class AuthService {
   async login(email, password) {
@@ -149,4 +149,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+module.exports = new AuthService();

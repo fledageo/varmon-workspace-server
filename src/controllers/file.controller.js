@@ -1,4 +1,4 @@
-import FileService from "../services/file.service.js";
+const FileService = require("../services/file.service.js");
 
 class FileController {
 
@@ -63,4 +63,4 @@ class FileController {
   }
 }
 
-export default new FileController();
+module.exports = new FileController();

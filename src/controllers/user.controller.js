@@ -1,4 +1,4 @@
-import userService from "../services/user.service.js";
+const userService = require("../services/user.service.js");
 
 class UserController {
   async getUserById(req, res) {
@@ -56,4 +56,4 @@ class UserController {
   }
 }
 
-export default new UserController();
+module.exports = new UserController();

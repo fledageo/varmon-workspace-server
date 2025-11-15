@@ -1,5 +1,5 @@
-import statsService from "../services/stats.service.js";
-import caseService from "../services/case.service.js";
+const statsService = require("../services/stats.service.js");
+const caseService = require("../services/case.service.js");
 
 class MainPageDataController {
     async getDashboardData(req, res) {
@@ -66,4 +66,4 @@ class MainPageDataController {
     }
 }
 
-export default new MainPageDataController();
+module.exports = new MainPageDataController();

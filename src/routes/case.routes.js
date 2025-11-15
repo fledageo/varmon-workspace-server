@@ -1,7 +1,7 @@
-import e from "express";
-import CaseController from "../controllers/case.controller.js";
-import authToken from "../middlewares/authToken.js";
-import checkRole from "../middlewares/checkRole.js";
+const e = require("express");
+const CaseController = require("../controllers/case.controller.js");
+const authToken = require("../middlewares/authToken.js");
+const checkRole = require("../middlewares/checkRole.js");
 
 const caseRouter = e.Router();
 
@@ -24,4 +24,4 @@ caseRouter.put("/:id", authToken, CaseController.updateCase);
 caseRouter.get("/user/:userId", authToken, CaseController.getUserCases);
 caseRouter.get("/user/profile/:userId", authToken, checkRole(["admin"]), CaseController.getUserProfileCases);
 
-export default caseRouter;
+module.exports = caseRouter;

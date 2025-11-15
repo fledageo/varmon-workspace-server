@@ -1,4 +1,4 @@
-import noteService from "../services/note.service.js";
+const noteService = require("../services/note.service.js");
 
 class NoteController {
   async getByCase(req, res) {
@@ -46,4 +46,4 @@ class NoteController {
   }
 }
 
-export default new NoteController();
+module.exports = new NoteController();

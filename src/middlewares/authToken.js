@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken"
+const jwt = require("jsonwebtoken");
 
 const authToken = (req, res, next) => {
     const token = req.cookies.token;
@@ -12,4 +12,4 @@ const authToken = (req, res, next) => {
     }
 };
 
-export default authToken;
+module.exports = authToken;

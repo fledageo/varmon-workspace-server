@@ -1,4 +1,4 @@
-import StatsService from "../services/stats.service.js";
+const StatsService = require("../services/stats.service.js");
 
 class StatsController {
     async getStats(req, res) {
@@ -54,4 +54,4 @@ class StatsController {
     }
 }
 
-export default new StatsController()
+module.exports = new StatsController();

@@ -1,4 +1,4 @@
-import prisma from "../../prisma/prismaClient.js";
+const prisma = require("../../prisma/prismaClient.js");
 
 class NoteService {
   async getByCaseId(caseId) {
@@ -35,4 +35,4 @@ class NoteService {
   }
 }
 
-export default new NoteService();
+module.exports = new NoteService();

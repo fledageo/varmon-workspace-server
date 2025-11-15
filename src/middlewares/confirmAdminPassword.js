@@ -1,7 +1,7 @@
-import bcrypt from "bcrypt";
-import prisma from "../../prisma/prismaClient.js"; 
+const bcrypt = require("bcrypt");
+const prisma = require("../../prisma/prismaClient.js"); 
 
-export const confirmAdminPassword = async (req, res, next) => {
+const confirmAdminPassword = async (req, res, next) => {
   try {
     const { admin_password } = req.body;
     const adminId = req.user.user_id; 
@@ -29,3 +29,5 @@ export const confirmAdminPassword = async (req, res, next) => {
     res.status(500).json({ status: "error", message: "Something went wrong" });
   }
 };
+
+exports.confirmAdminPassword = confirmAdminPassword;

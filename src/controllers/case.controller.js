@@ -1,4 +1,4 @@
-import caseService from "../services/case.service.js";
+const caseService = require("../services/case.service.js");
 
 class CaseController {
   async addCase(req, res) {
@@ -239,4 +239,4 @@ class CaseController {
   }
 }
 
-export default new CaseController();
+module.exports = new CaseController();

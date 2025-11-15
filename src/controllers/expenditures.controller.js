@@ -1,4 +1,4 @@
-import expendituresService from "../services/expenditure.service.js";
+const expendituresService = require("../services/expenditure.service.js");
 
 class ExpendituresController {
   async getByCase(req, res) {
@@ -46,4 +46,4 @@ class ExpendituresController {
   }
 }
 
-export default new ExpendituresController();
+module.exports = new ExpendituresController();

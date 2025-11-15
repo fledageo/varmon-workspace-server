@@ -1,9 +1,9 @@
-import env from "dotenv";
-import express from "express";
-import cors from "cors";
-import prisma from "../prisma/prismaClient.js";
-import router from "./routes/router.js";
-import cookieParser from "cookie-parser";
+const env = require("dotenv");
+const express = require("express");
+const cors = require("cors");
+const prisma = require("./prisma/prismaClient.js");
+const router = require("./src/routes/router.js");
+const cookieParser = require("cookie-parser");
 
 env.config();
 const app = express();

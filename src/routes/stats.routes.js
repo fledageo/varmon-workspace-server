@@ -1,7 +1,7 @@
-import e from "express";
-import StatsController from "../controllers/stats.controller.js";
-import authToken from "../middlewares/authToken.js";
-import checkRole from "../middlewares/checkRole.js";
+const e = require("express");
+const StatsController = require("../controllers/stats.controller.js");
+const authToken = require("../middlewares/authToken.js");
+const checkRole = require("../middlewares/checkRole.js");
 
 const statsRouter = e.Router();
 
@@ -12,4 +12,4 @@ statsRouter.get("/year/cases", authToken, checkRole(["admin"]), StatsController.
 statsRouter.get("/user/year/cases/:userId", authToken, StatsController.getUserYearlyCasesCount);
 
 
-export default statsRouter;
+module.exports = statsRouter;

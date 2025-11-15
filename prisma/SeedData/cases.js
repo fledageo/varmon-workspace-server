@@ -504,4 +504,4 @@ const cases = [
   }
 ];
 
-export default cases;
+module.exports = cases;

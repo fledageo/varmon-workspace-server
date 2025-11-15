@@ -1,4 +1,4 @@
-import prisma from "../../prisma/prismaClient.js";
+const prisma = require("../../prisma/prismaClient.js");
 
 
 class UserService {
@@ -58,4 +58,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+module.exports = new UserService();

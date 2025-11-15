@@ -1,7 +1,7 @@
-import e from "express";
-import FileController from "../controllers/file.controller.js";
-import authToken from "../middlewares/authToken.js";
-import upload from "../middlewares/upload.js";
+const e = require("express");
+const FileController = require("../controllers/file.controller.js");
+const authToken = require("../middlewares/authToken.js");
+const upload = require("../middlewares/upload.js");
 
 const fileRouter = e.Router();
 
@@ -11,4 +11,4 @@ fileRouter.post("/upload/:id", authToken, upload.single('file'), FileController.
 fileRouter.delete("/delete/:id", authToken, FileController.deleteCaseFile);
 
 
-export default fileRouter;
+module.exports = fileRouter;

@@ -1,4 +1,4 @@
-import prisma from "../../prisma/prismaClient.js";
+const prisma = require("../../prisma/prismaClient.js");
 
 class ExpendituresService {
   async getByCaseId(caseId) {
@@ -35,4 +35,4 @@ class ExpendituresService {
   }
 }
 
-export default new ExpendituresService();
+module.exports = new ExpendituresService();

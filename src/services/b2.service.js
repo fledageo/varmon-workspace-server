@@ -1,6 +1,6 @@
-import path from "path";
-import s3 from "../config/b2.js";
-import { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
+const path = require("path");
+const s3 = require("../config/b2.js");
+const { PutObjectCommand, DeleteObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 
 class B2Service {
   async uploadTempFile(file, caseId, caseNumber) {
@@ -38,4 +38,4 @@ class B2Service {
   }
 }
 
-export default new B2Service();
+module.exports = new B2Service();

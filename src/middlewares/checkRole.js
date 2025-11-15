@@ -15,4 +15,4 @@ const checkRole = (roles = []) => {
   };
 };
 
-export default checkRole;
+module.exports = checkRole;

@@ -1,5 +1,5 @@
-import prisma from "../../prisma/prismaClient.js";
-import B2Service from "./b2.service.js";
+const prisma = require("../../prisma/prismaClient.js");
+const B2Service = require("./b2.service.js");
 
 class CaseService {
   async createCase(caseData) {
@@ -368,4 +368,4 @@ class CaseService {
   }
 
 }
-export default new CaseService();
+module.exports = new CaseService();

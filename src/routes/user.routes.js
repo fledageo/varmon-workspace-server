@@ -1,7 +1,7 @@
-import e from "express";
-import UserController from "../controllers/user.controller.js";
-import authToken from "../middlewares/authToken.js";
-import checkRole from "../middlewares/checkRole.js";
+const e = require("express");
+const UserController = require("../controllers/user.controller.js");
+const authToken = require("../middlewares/authToken.js");
+const checkRole = require("../middlewares/checkRole.js");
 
 const userRouter = e.Router()
 
@@ -14,4 +14,4 @@ userRouter.put("/:id", authToken, UserController.updateUser)
 
 
 
-export default userRouter
+module.exports = userRouter;

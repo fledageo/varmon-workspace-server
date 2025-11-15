@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client'
-import casesData from "./SeedData/cases.js"
+const { PrismaClient } = require('@prisma/client');
+const casesData = require("./SeedData/cases.js");
 
 const prisma = new PrismaClient()
 

@@ -1,6 +1,6 @@
-import express from "express";
-import expendituresController from "../controllers/expenditures.controller.js";
-import authToken from "../middlewares/authToken.js";
+const express = require("express");
+const expendituresController = require("../controllers/expenditures.controller.js");
+const authToken = require("../middlewares/authToken.js");
 
 const expenditureRouter = express.Router();
 
@@ -9,4 +9,4 @@ expenditureRouter.post("/add/case/:caseId", authToken, expendituresController.ad
 expenditureRouter.put("/:id", authToken, expendituresController.update);
 expenditureRouter.delete("/:id", authToken, expendituresController.delete);
 
-export default expenditureRouter;
+module.exports = expenditureRouter;

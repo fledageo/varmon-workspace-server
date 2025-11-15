@@ -1,4 +1,4 @@
-import prisma from "../../prisma/prismaClient.js";
+const prisma = require("../../prisma/prismaClient.js");
 
 class StatsService {
     async getStats() {
@@ -157,4 +157,4 @@ class StatsService {
     }
 }
 
-export default new StatsService()
+module.exports = new StatsService();
