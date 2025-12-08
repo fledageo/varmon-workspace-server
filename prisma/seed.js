@@ -1,12 +1,13 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-
+const env = require("dotenv");
 
 const prisma = new PrismaClient()
+env.config()
 
 const main = async () => {
-    const email = "admin"
-    const password = "admin123"
+    const email = process.env.ADMIN_LOGIN
+    const password = process.env.ADMIN_PASSWORD
     try {
 
         const isExist = await prisma.user.findUnique({ where: { email } })
@@ -27,7 +28,7 @@ const main = async () => {
                 status: 'active',
                 password: hashedPassword,
             }
-        })  
+        })
 
         console.log("Admin user created")
 
