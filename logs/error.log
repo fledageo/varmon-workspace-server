@@ -1,0 +1,51 @@
+[2025-12-09T13:08:34.021Z] inviteUser controller error: PrismaClientValidationError: 
+Invalid `prisma.user.create()` invocation in
+C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\src\services\auth.service.js:35:43
+
+  32 const isExist = await prisma.user.findUnique({ where: { email: newUser.email } });
+  33 if (isExist) return null;
+  34 
+→ 35 const createdUser = await prisma.user.create({
+       data: {
+         first_name: "David",
+         last_name: "Gevorgyan",
+         email: "dav.gevorgyan.main@gmail.com",
+         status: "invited"
+                 ~~~~~~~~~
+       },
+       select: {
+         id: true,
+         first_name: true,
+         last_name: true,
+         email: true,
+         status: true
+       }
+     })
+
+Invalid value for argument `status`. Expected UserStatus.
+    at Nn (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at ei.handleRequestError (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\node_modules\@prisma\client\runtime\library.js:121:6911)
+    at ei.handleAndLogRequestError (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\node_modules\@prisma\client\runtime\library.js:121:6593)
+    at ei.request (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\node_modules\@prisma\client\runtime\library.js:121:6300)
+    at async a (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\node_modules\@prisma\client\runtime\library.js:130:9551)
+    at async AuthService.inviteUser (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\src\services\auth.service.js:35:25)
+    at async inviteUser (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\src\controllers\auth.controller.js:36:26)
+
+[2025-12-09T13:10:04.738Z] Mailersend failed for dav.gevorgyan.main@gmail.com: [object Object]
+
+[2025-12-09T13:10:05.062Z] inviteUser controller error: ReferenceError: logger is not defined
+    at AuthService.inviteUser (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\src\services\auth.service.js:55:9)
+    at async inviteUser (C:\Users\David Gevorgyan\Desktop\varmon-workspace-server\src\controllers\auth.controller.js:37:26)
+
+[2025-12-09T13:12:16.630Z] Mailersend failed for dav.gevorgyan.main@gmail.com: [object Object]
+
+[2025-12-09T13:12:16.937Z] inviteUser controller error: [object Object]
+
+[2025-12-09T13:13:29.996Z] Mailersend failed for dav.gevorgyan.main@gmail.com: [object Object]
+
+[2025-12-09T13:13:30.328Z] inviteUser controller error: [object Object]
+
+[2025-12-09T13:16:34.939Z] Mailersend failed for dav.gevorgyan.main@gmail.com: [object Object]
+
+[2025-12-09T13:16:35.308Z] inviteUser controller error: [object Object]
+

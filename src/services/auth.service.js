@@ -1,7 +1,8 @@
 const prisma = require("../../prisma/prismaClient.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sendMail } = require("../utils/mailSender.js");
+const { sendMail } = require("../utils/mailer.js");
+const logger = require("../utils/logger.js");
 
 class AuthService {
   async login(email, password) {
@@ -29,7 +30,6 @@ class AuthService {
   }
 
   async inviteUser(newUser) {
-
     const isExist = await prisma.user.findUnique({ where: { email: newUser.email } });
     if (isExist) return null;
 
@@ -37,24 +37,29 @@ class AuthService {
       data: {
         first_name: newUser.first_name,
         last_name: newUser.last_name,
-        email: newUser.email
+        email: newUser.email,
+        status: 'inactive'
       },
-      select: {
-        id: true,
-        first_name: true,
-        last_name: true,
-        email: true,
-        status: true
-      }
+      select: { id: true, first_name: true, last_name: true, email: true, status: true },
     });
 
-    const activationToken = jwt.sign({ id: createdUser.id }, process.env.SECRET_KEY);
+    const token = jwt.sign({ id: createdUser.id, email: createdUser.email }, process.env.SECRET_KEY, { expiresIn: '7d' });
 
-    const sent = await sendMail(createdUser.id, createdUser.email, activationToken, "invite");
-    if (!sent) throw new Error("Failed to send invite email");
-
-    return createdUser;
+    try {
+      await sendMail(createdUser.id, createdUser.email, token, 'invite');
+      return createdUser;
+    } catch (err) {
+      try {
+        await prisma.user.delete({ where: { id: createdUser.id } });
+        logger.info(`inviteUser: rolled back (deleted) user ${createdUser.id}`);
+      } catch (delErr) {
+        logger.error(`inviteUser rollback failed for ${createdUser.id}: ${delErr && delErr.stack ? delErr.stack : delErr}`);
+      }
+      throw err;
+    }
   }
+
+
   async sendResetPasswordToken(email) {
     const foundUser = await prisma.user.findUnique({ where: { email } });
     if (!foundUser) throw new Error("USER_NOT_FOUND");
@@ -134,10 +139,10 @@ class AuthService {
 
   async updatePassword(userId, oldPassword, newPassword) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) return {status: "error", message: "User not found"};
+    if (!user) return { status: "error", message: "User not found" };
 
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-    if (!isPasswordValid) return {status: "error", message: "Invalid old password"};
+    if (!isPasswordValid) return { status: "error", message: "Invalid old password" };
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.user.update({
@@ -145,7 +150,7 @@ class AuthService {
       data: { password: hashedPassword },
     });
 
-    return {status: "ok", message: "Password updated successfully"};
+    return { status: "ok", message: "Password updated successfully" };
   }
 }
 

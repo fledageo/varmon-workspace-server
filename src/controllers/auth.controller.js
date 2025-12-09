@@ -1,4 +1,5 @@
 const authService = require("../services/auth.service.js");
+const logger = require("../utils/logger.js")
 
 class AuthController {
     async login(req, res) {
@@ -33,13 +34,32 @@ class AuthController {
 
     async inviteUser(req, res) {
         try {
-            const { newUser } = req.body;
-            const user = await authService.inviteUser(newUser);
-            if(!user) return res.status(400).json({ status: "error", message: "User with this email already exists", code: "EMAIL_EXIST" })
-            return res.status(200).json({ status: "ok", payload: user, message: "Invitation sent" });
+            const user = await authService.inviteUser(req.body.newUser);
+
+            if (!user) {
+                return res.status(400).json({
+                    status: "error",
+                    message: "User with this email already exists",
+                    code: "EMAIL_EXIST",
+                });
+            }
+
+            return res.status(200).json({
+                status: "ok",
+                payload: user,
+                message: "Invitation sent",
+            });
+
         } catch (error) {
-            console.error(error.message);
-            return res.status(500).json({ status: "error", message: "Something went wrong!" });
+            console.log(error)
+            logger.error(
+                "inviteUser controller error: " + (error?.stack || error)
+            );
+
+            return res.status(500).json({
+                status: "error",
+                message: "Something went wrong!",
+            });
         }
     }
 
@@ -157,10 +177,10 @@ class AuthController {
             const { old_password, new_password } = req.body;
             const { user_id } = req.user;
             const result = await authService.updatePassword(user_id, old_password, new_password);
-            
+
             if (result.status === "ok") {
                 return res.status(200).json(result);
-            }else{
+            } else {
                 return res.status(400).json(result);
             }
         } catch (error) {

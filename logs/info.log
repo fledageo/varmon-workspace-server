@@ -1,0 +1,12 @@
+[2025-12-09T12:14:56.057Z] SMTP transporter verified
+
+[2025-12-09T12:14:57.893Z] sendMail success: {"accepted":["dav.gevorgyan3.y@gmail.com"],"rejected":[],"ehlo":["SIZE 35882577","8BITMIME","AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH","ENHANCEDSTATUSCODES","PIPELINING","CHUNKING","SMTPUTF8"],"envelopeTime":506,"messageTime":769,"messageSize":1058,"response":"250 2.0.0 OK  1765282499 2adb3069b0e04-597d7c1e389sm5185357e87.62 - gsmtp","envelope":{"from":"bithevean@gmail.com","to":["dav.gevorgyan3.y@gmail.com"]},"messageId":"<7289e971-1df3-1da3-9ef2-656d12c732b9@gmail.com>"}
+
+[2025-12-09T13:12:16.935Z] inviteUser: rolled back (deleted) user 9
+
+[2025-12-09T13:13:30.317Z] inviteUser: rolled back (deleted) user 10
+
+[2025-12-09T13:16:35.292Z] inviteUser: rolled back (deleted) user 11
+
+[2025-12-09T13:17:24.179Z] Mailersend: email sent to dav.gevorgyan.main@gmail.com
+
